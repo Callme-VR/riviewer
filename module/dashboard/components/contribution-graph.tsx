@@ -10,14 +10,14 @@ import { getContributionState } from "../actions";
 export default function ContributionGraph() {
 
   const { theme } = useTheme();
-  const { data: isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["github.contributionGraph"],
     queryFn: async () => await getContributionState(),
     staleTime: 1000 * 60 * 5
 
   })
 
-  if (!isLoading) {
+  if (isLoading) {
     return (
       <div className="w-full flex flex-col items-center justify-center p-9">
         <div className="animate-pulse text-primary">
@@ -57,43 +57,39 @@ export default function ContributionGraph() {
       </div>
     </div>
   )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  return <div>Contribution Graph</div>
 }
-function getGithubContributionGraph(): any {
-  throw new Error("Function not implemented.");
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
