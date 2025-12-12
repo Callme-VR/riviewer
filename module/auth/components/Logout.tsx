@@ -21,10 +21,8 @@ export default function Logout({
       await signOut({
         fetchOptions: {
           onSuccess: () => {
-            // Use a slight delay to ensure the session is fully cleared
-            setTimeout(() => {
-              router.push(redirectUrl);
-            }, 100);
+            // Redirect immediately after successful sign out
+            router.push(redirectUrl);
           }
         }
       });
