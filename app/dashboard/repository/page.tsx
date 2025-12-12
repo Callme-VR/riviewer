@@ -183,7 +183,8 @@ export default function DashboardRepositories() {
                     </div>
 
                     <CardDescription>
-                      {repo.description || "No description provided"}
+                      {repo.stargazers_count || 0}{" "}
+                      <Star className="inline-block h-4 w-4 mb-1" /> •{" "}
                     </CardDescription>
                   </div>
 
