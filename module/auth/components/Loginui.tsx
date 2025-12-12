@@ -48,7 +48,7 @@ export default function LoginUI() {
         <div className="w-full max-w-sm">
           <div className="mb-10">
             <h2 className="text-3xl font-bold mb-4">Welcome Back</h2>
-            <p className="text-primary-foreground">Login using your GitHub account to continue.</p>
+            <p className="text-primary">Login using your GitHub account to continue.</p>
           </div>
 
           {/* GitHub Login Button */}
