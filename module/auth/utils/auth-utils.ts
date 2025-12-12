@@ -19,7 +19,7 @@ export const requireunAuth = async () => {
     headers: await headers(),
   });
   if (session) {
-    redirect("/");
+    redirect("/dashboard"); // Changed from "/" to "/dashboard" to be more specific
   }
   return session;
 };
