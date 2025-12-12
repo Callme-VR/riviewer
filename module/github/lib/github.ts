@@ -76,10 +76,10 @@ export const fetchUserContribution = async (token: string, userName: string) => 
   `;
 
   try {
-    const response: any = await octokit.graphql<GitHubResponse>(query, {
+    const response = await octokit.graphql<GitHubResponse>(query, {
       username: userName,
     });
-    
+
     return response.user.contributionsCollection.contributionCalendar;
   } catch (error) {
     console.error("Error fetching user contributions:", error);
@@ -90,3 +90,18 @@ export const fetchUserContribution = async (token: string, userName: string) => 
     } as ContributionCalendar;
   }
 };
+
+
+export const getRepositories = async (page: number = 1, perPage: number = 10) => {
+  const token = await await getGithubToken();
+  const octokit = new Octokit({ auth: token });
+
+  const { data } = await octokit.rest.repos.listForAuthenticatedUser({
+    sort: "updated",
+    direction: "desc",
+    visibility: "all",
+    per_page: perPage,
+    page: page
+  })
+  return data;
+}
