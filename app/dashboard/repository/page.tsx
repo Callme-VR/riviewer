@@ -15,6 +15,7 @@ import { ExternalLink, Star, Search } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useRepositories } from "@/module/repository/hooks/use-repositories";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useConnectRepository } from "@/module/repository/hooks/use-connect-repositories";
 
 interface Repository {
   id: number;
@@ -42,6 +43,9 @@ export default function DashboardRepositories() {
     isFetchingNextPage,
   } = useRepositories();
   // Add infinite scroll observer
+
+  const { mutate: connectRepo } = useConnectRepository();
+
   const observer = useRef<IntersectionObserver | null>(null);
   const lastRepositoryRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -50,12 +54,19 @@ export default function DashboardRepositories() {
 
   const handleConnect = (repo: Repository) => {
     // Implement connect logic here
-    console.log("Connecting repository:", repo.name);
     setLocalConnectingId(repo.id);
-    // Simulate connection process
-    setTimeout(() => {
-      setLocalConnectingId(null);
-    }, 1000);
+    connectRepo(
+      {
+        owner: repo.full_name.split("/")[0],
+        repo: repo.name,
+        githubId: repo.id,
+      },
+      {
+        onSettled: () => {
+          setLocalConnectingId(null);
+        },
+      }
+    );
   };
 
   // Filter the repositories (handle possible undefined entries coming from the API result)

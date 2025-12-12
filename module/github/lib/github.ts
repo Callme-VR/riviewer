@@ -53,7 +53,10 @@ export const getGithubToken = async () => {
 };
 
 // for usercontribution fetching from database
-export const fetchUserContribution = async (token: string, userName: string) => {
+export const fetchUserContribution = async (
+  token: string,
+  userName: string
+) => {
   const octokit = new Octokit({ auth: token });
 
   const query = `
@@ -86,13 +89,15 @@ export const fetchUserContribution = async (token: string, userName: string) => 
     // Return a default structure in case of error
     return {
       totalContributions: 0,
-      weeks: []
+      weeks: [],
     } as ContributionCalendar;
   }
 };
 
-
-export const getRepositories = async (page: number = 1, perPage: number = 10) => {
+export const getRepositories = async (
+  page: number = 1,
+  perPage: number = 10
+) => {
   const token = await await getGithubToken();
   const octokit = new Octokit({ auth: token });
 
@@ -101,7 +106,38 @@ export const getRepositories = async (page: number = 1, perPage: number = 10) =>
     direction: "desc",
     visibility: "all",
     per_page: perPage,
-    page: page
-  })
+    page: page,
+  });
   return data;
-}
+};
+
+//
+export const createWebHook = async (owner: string, repo: string) => {
+  const token = await getGithubToken();
+
+  const octokit = new Octokit({ auth: token });
+  const webHookUrl = `${process.env.NEXT_PUBLIC_BASE_APP_URL}/api/webhooks/github`;
+
+  const { data: hooks } = await octokit.rest.repos.listWebhooks({
+    owner,
+    repo,
+  });
+
+  const existingHook = hooks.find((hooks) => hooks.config.url === webHookUrl);
+  if (existingHook) {
+    return existingHook;
+  }
+
+  const { data } = await octokit.rest.repos.createWebhook({
+    owner,
+    repo,
+    config: {
+      url: webHookUrl,
+      content_type: "json",
+    },
+    events:["pull_request"]
+  });
+  return data;
+};
+
+
