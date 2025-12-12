@@ -3,11 +3,45 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/db";
 import {
+  fetchUserContribution,
   getGithubToken,
-  fetchUserContribution as getUserContribution,
 } from "@/module/github/lib/github";
 import { headers } from "next/headers";
 import { Octokit } from "octokit";
+
+export const getContributionState = async () => {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    if (!session?.user) {
+      throw new Error("Unauthorized");
+    }
+    const token = await getGithubToken();
+    const octokit = new Octokit({ auth: token });
+    
+    const { data: user } = await octokit.rest.users.getAuthenticated();
+
+    const calendar = await fetchUserContribution(token, user.login);
+    if (!calendar) throw new Error("Failed to fetch contribution calendar");
+
+    const contribution = calendar.weeks.flatMap((week: any) =>
+      week.contributionDays.map((day: any) => ({
+        date: day.date,
+        count: day.contributionCount,
+        level: Math.min(4, Math.floor(day.contributionCount / 3)),
+      }))
+    );
+    
+    return {
+      contribution,
+      totalContributions: calendar.totalContributions
+    };
+  } catch (error) {
+    console.error("Error fetching contribution stats:", error);
+    return null;
+  }
+};
 
 export const getGithubStats = async () => {
   try {
@@ -28,13 +62,13 @@ export const getGithubStats = async () => {
     // TODO: FETCH TOTAL CONNECTED REPO FROM DB;
     const totalRepos = 30;
 
-    const calendar = await getUserContribution(token, user.login);
+    const calendar = await fetchUserContribution(token, user.login);
     const totalCommits = calendar?.totalContributions || 0;
 
     // Count prs from database or github
     const { data: prs } = await octokit.rest.search.issuesAndPullRequests({
       q: `author:${user.login} type:pr`,
-      per_page: 1,
+      per_page: 1
     });
 
     const totalPRs = prs.total_count;
@@ -46,8 +80,9 @@ export const getGithubStats = async () => {
       totalCommits,
       totalPRs,
       totalReviews,
-      totalRepos,
+      totalRepos
     };
+
   } catch (error) {
     console.error("Error fetching dashboard stats:", error);
     return {
@@ -74,7 +109,7 @@ export const getMonthlyActivity = async () => {
 
     const { data: user } = await octokit.rest.users.getAuthenticated();
 
-    const calendar = await getUserContribution(token, user.login);
+    const calendar = await fetchUserContribution(token, user.login);
 
     if (!calendar) {
       return [];
@@ -85,18 +120,8 @@ export const getMonthlyActivity = async () => {
     } = {};
 
     const monthNames = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
     ];
 
     // Initialize last 6 months
@@ -150,9 +175,7 @@ export const getMonthlyActivity = async () => {
     });
 
     const { data: prs } = await octokit.rest.search.issuesAndPullRequests({
-      q: `author:${user.login} type:pr created:>${
-        sixMonthsAgo.toISOString().split("T")[0]
-      }`,
+      q: `author:${user.login} type:pr created:>${sixMonthsAgo.toISOString().split("T")[0]}`,
       per_page: 100,
     });
 
