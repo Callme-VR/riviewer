@@ -4,7 +4,6 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/db";
 import { getRepositories } from "@/module/github/lib/github";
 import { headers } from "next/headers";
-import { NextResponse } from "next/server";
 
 export const fetchrepositories = async (page: number = 1, perPage: number = 10) => {
   try {
@@ -14,7 +13,7 @@ export const fetchrepositories = async (page: number = 1, perPage: number = 10) 
     });
     
     if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return { error: "Unauthorized", status: 401 };
     }
     
     const githubrepos = await getRepositories(page, perPage);
@@ -29,16 +28,16 @@ export const fetchrepositories = async (page: number = 1, perPage: number = 10) 
 
     const filteredRepos = githubrepos.filter((repo) => !connectedreposids.has(BigInt(repo.id)));
 
-    return NextResponse.json({
+    return {
       data: githubrepos.map((repo) => ({
         ...repo,
-        isconnected: connectedreposids.has(BigInt(repo.id))
+        isConnected: connectedreposids.has(BigInt(repo.id))
       })),
       nextPage: page + 1,
       hasNextPage: filteredRepos.length > 0
-    });
+    };
   } catch (error) {
     console.error("Error fetching repositories:", error);
-    return NextResponse.json({ error: "Failed to fetch repositories" }, { status: 500 });
+    return { error: "Failed to fetch repositories", status: 500 };
   }
 };

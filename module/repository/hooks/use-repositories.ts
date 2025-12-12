@@ -7,9 +7,7 @@ export const useRepositories = () => {
   return useInfiniteQuery({
     queryKey: ["repositories"],
     queryFn: async ({ pageParam = 1 }) => {
-      const response = await fetchrepositories(pageParam, 10);
-      // Extract the JSON data from the NextResponse
-      const data = await response.json();
+      const data = await fetchrepositories(pageParam, 10);
       return data;
     },
     getNextPageParam: (lastPage, allPages) => {

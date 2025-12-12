@@ -19,7 +19,7 @@ export default function LoginUI() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-black to-zinc-900 text-white flex">
+    <div className="min-h-screen bg-linear-to-br from-black via-black to-zinc-900 text-white flex">
       {/* Left section */}
       <div className="flex-1 flex flex-col justify-center px-12 py-16">
         {/* Logo */}
