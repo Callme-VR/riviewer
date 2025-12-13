@@ -1,3 +1,5 @@
+import ProfileForm from "@/module/settings/components/profile-form";
+
 export default function SettingsPage() {
   return (
     <div className="space-y-6">
@@ -5,6 +7,7 @@ export default function SettingsPage() {
       <p className="text-sm text-muted-foreground">
         Manage your application settings here.
       </p>
+      <ProfileForm/>
     </div>
   );
 }
