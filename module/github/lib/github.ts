@@ -155,7 +155,7 @@ export const deleteWebhook = async (owner: string, repo: string) => {
       owner, repo
     });
 
-    const hooktoDelete = hooks.find(hooks => hooks.config.url === "webHookUrl")
+    const hooktoDelete = hooks.find(hooks => hooks.config.url === webhooksUrl)
 
     if (hooktoDelete) {
       await octokit.rest.repos.deleteWebhook({
@@ -170,3 +170,102 @@ export const deleteWebhook = async (owner: string, repo: string) => {
   }
 
 }
+
+export async function getRepoFileContent(
+  token: string,
+  owner: string,
+  repo: string,
+  path: string = ""
+): Promise<{ path: string, content: string }[]> {
+  const octokit = new Octokit({ auth: token });
+  const files: { path: string, content: string }[] = [];
+
+  const { data } = await octokit.rest.repos.getContent({
+    owner,
+    repo,
+    path,
+  })
+
+  // Handle directory case - recursively fetch all files
+  if (Array.isArray(data)) {
+    for (const item of data) {
+      if (item.type === "dir") {
+        // Recursively fetch contents of subdirectory
+        const subFiles = await getRepoFileContent(token, owner, repo, item.path);
+        files.push(...subFiles);
+      } else if (item.type === "file") {
+        // Fetch individual file content
+        try {
+          const { data: fileData } = await octokit.rest.repos.getContent({
+            owner,
+            repo,
+            path: item.path,
+          });
+
+          if (!Array.isArray(fileData) && fileData.type === "file" && fileData.content) {
+            // Filter out binary files
+            if (!item.path.match(/\.(png|jpg|jpeg|svg|ico|pdf|zip|tar|gz|exe|dll|so|dylib)$/i)) {
+              files.push({
+                path: item.path,
+                content: Buffer.from(fileData.content, "base64").toString("utf-8")
+              });
+            }
+          }
+        } catch (error) {
+          console.error(`Error fetching file ${item.path}:`, error);
+        }
+      }
+    }
+    return files;
+  }
+
+  // Handle single file case
+  if (data.type === "file" && data.content) {
+    if (!path.match(/\.(png|jpg|jpeg|svg|ico|pdf|zip|tar|gz|exe|dll|so|dylib)$/i)) {
+      return [{
+        path: data.path,
+        content: Buffer.from(data.content, "base64").toString("utf-8")
+      }];
+    } else {
+      return [];
+    }
+  } else {
+    return [];
+  }
+}
+
+export async function getPullRequestDiff(token: string, owner: string, repo: string, prNumber: number) {
+  const octokit = new Octokit({ auth: token });
+  const { data: pr } = await octokit.rest.pulls.get({
+    owner,
+    repo,
+    pull_number: prNumber
+  })
+
+  const { data: diff } = await octokit.rest.pulls.get({
+    owner,
+    repo,
+    pull_number: prNumber,
+    mediaType: {
+      format: "diff"
+    }
+  })
+
+  return {
+    diff: diff as unknown as string,
+    title: pr.title,
+    description: pr.body,
+
+  }
+}
+
+
+export async function postreviewComment(token: string, owner: string, repo: string, prNumber: number, review: string) {
+
+  const octokit = new Octokit({ auth: token })
+
+  await octokit.rest.issues.createComment({
+    owner, repo, issue_number: prNumber,
+    body: `## 🤖 AI CodeReview \n\n${review}\n\n---\n*Powered by The Reviewer*`
+  })
+} 

@@ -1,5 +1,6 @@
 "use server";
 
+import { inngest } from "@/inngest/client";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/db";
 import { createWebHook, getRepositories } from "@/module/github/lib/github";
@@ -79,24 +80,25 @@ export const connectrepository = async (
     // todo:increment repository count for the user
     // todo: trigger repository sync and indexing
 
-    
+    try {
+      await inngest.send({
+        name: "repository-connnected",
+        data: {
+          owner,
+          repo,
+          userId: session.user.id
+        }
+
+      })
+    } catch (error) {
+      console.log("Failed to  Trigger Indexing", error)
+    }
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+    return webhooks
   } catch (error) {
     console.error("Error connecting repository:", error);
     return { error: "Failed to connect repository", status: 500 };
