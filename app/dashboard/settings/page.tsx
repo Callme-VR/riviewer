@@ -1,4 +1,5 @@
 import ProfileForm from "@/module/settings/components/profile-form";
+import RepositoryList from "@/module/settings/components/repo-all";
 
 export default function SettingsPage() {
   return (
@@ -8,6 +9,7 @@ export default function SettingsPage() {
         Manage your application settings here.
       </p>
       <ProfileForm/>
+      <RepositoryList/>
     </div>
   );
 }
