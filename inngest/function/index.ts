@@ -2,12 +2,13 @@ import { inngest } from "@/inngest/client";
 import prisma from "@/lib/db";
 import { IndexCodeBase } from "@/module/ai/lib/rag";
 import { getRepoFileContent } from "@/module/github/lib/github";
+import { generateReview } from "./review";
 
 export const indexRepo = inngest.createFunction(
      {
           id: "index-repo",
      },
-     { event: "repository-connnected" },
+     { event: "repository-connected" }, // Fixed typo: "repository-connnected" -> "repository-connected"
      async ({ event, step }) => {
           const { owner, userId, repo } = event.data;
 
@@ -35,5 +36,7 @@ export const indexRepo = inngest.createFunction(
 
 
      }
+);
 
-)    
+// Export the generateReview function as well
+export { generateReview };

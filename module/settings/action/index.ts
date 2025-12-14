@@ -129,7 +129,8 @@ export async function DisConnectecdRepository(repositoryId: string) {
       throw new Error("Repository not found")
     }
 
-    await deleteWebhook(repository.name, repository.owner);
+    // Fix the parameter order - should be (owner, repo) not (repo, owner)
+    await deleteWebhook(repository.owner, repository.name);
 
     await prisma.repository.delete({
       where: {
@@ -166,7 +167,8 @@ export async function DisConnectedAllRepository() {
     })
 
     await Promise.all(repositories.map(async (repo) => {
-      await deleteWebhook(repo.name, repo.owner)
+      // Fix the parameter order - should be (owner, repo) not (repo, owner)
+      await deleteWebhook(repo.owner, repo.name)
     }))
 
 

@@ -1,4 +1,3 @@
-
 "use server"
 
 import { inngest } from "@/inngest/client"
@@ -8,6 +7,7 @@ import { getPullRequestDiff } from "@/module/github/lib/github"
 export async function reviewPullRequest(owner: string, repo: string, prNumber: number) {
 
      try {
+          console.log("Starting reviewPullRequest", { owner, repo, prNumber });
 
           const respository = await prisma.repository.findFirst({
                where: {
@@ -28,12 +28,14 @@ export async function reviewPullRequest(owner: string, repo: string, prNumber: n
           })
 
           if (!respository) {
+               console.error(`Repository ${owner}/${repo} not found`);
                throw new Error(`Repository ${owner}/${repo} not found`)
           }
           // for fetching the repo
           const githubAccount = respository.user.accounts[0]
 
           if (!githubAccount?.accessToken) {
+               console.error(`User ${respository.user.id} does not have a github account`);
                throw new Error(`User ${respository.user.id} does not have a github account`)
           }
 
@@ -41,17 +43,30 @@ export async function reviewPullRequest(owner: string, repo: string, prNumber: n
 
           const { title } = await getPullRequestDiff(Token, owner, repo, prNumber)
 
+          console.log("Sending event to Inngest", {
+               eventName: "pr.review.requested",
+               owner,
+               repo,
+               prNumber,
+               userId: respository.user.id,
+               title
+          });
+
           await inngest.send({
-               name: "re.review.requested",
+               name: "pr.review.requested",
                data: {
                     owner,
                     repo,
                     prNumber,
                     userId: respository.user.id,
+                    Token: githubAccount.accessToken,
                     title,
                }
           })
+          
+          console.log("Successfully sent event to Inngest");
      } catch (error) {
+          console.error("Error in reviewPullRequest:", error);
           try {
                const repository = await prisma.repository.findFirst({
                     where: { owner, name: repo }
@@ -75,4 +90,4 @@ export async function reviewPullRequest(owner: string, repo: string, prNumber: n
           }
      }
 
-}    
+}

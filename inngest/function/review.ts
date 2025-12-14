@@ -10,11 +10,24 @@ export const generateReview = inngest.createFunction(
      { event: "pr.review.requested" },
 
      async ({ event, step }) => {
-          const { owner, repo, prNumber, Token, userId } = event.data();
+          console.log("Generate review function triggered", event.data);
+          
+          const { owner, repo, prNumber, Token: eventToken, userId, title: eventTitle } = event.data;
 
           const { diff, title, description, token } = await step.run(
-               "get-fetch-data",
+               "fetch-pr-data",
                async () => {
+                    console.log("Fetching PR data", { owner, repo, prNumber });
+                    // First try to use the token from the event
+                    if (eventToken) {
+                         const prData = await getPullRequestDiff(eventToken, owner, repo, prNumber);
+                         return { 
+                              ...prData, 
+                              token: eventToken 
+                         };
+                    }
+                    
+                    // Fallback to getting token from database
                     const account = await prisma.account.findFirst({
                          where: {
                               userId: userId,
@@ -22,17 +35,21 @@ export const generateReview = inngest.createFunction(
                          },
                     });
 
-                    if (!account || !account.accessToken) {
-                         throw new Error("No GitHub account found for user");
+                    if (!account?.accessToken) {
+                         throw new Error("No GitHub access token found for user");
                     }
 
                     const prData = await getPullRequestDiff(account.accessToken, owner, repo, prNumber);
-                    return { ...prData, token: account.accessToken };
+                    return { 
+                         ...prData, 
+                         token: account.accessToken 
+                    };
                }
           );
 
           const context = await step.run("retrive-Context", async () => {
                const query = `${title}\n${description}`;
+               console.log("Retrieving context", { query, repoIdentifier: `${owner}/${repo}` });
                return await retriveContextContent(query, `${owner}/${repo}`);
           });
 
@@ -61,15 +78,25 @@ Please provide:
 
 Format your response in markdown.`;
 
+               console.log("Generating AI review with prompt length", prompt.length);
+               
+               // Check if Google API key is set
+               if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+                    console.error("GOOGLE_GENERATIVE_AI_API_KEY is not set");
+                    throw new Error("Google AI API key is not configured");
+               }
+               
                const { text } = await generateText({
                     model: google("gemini-2.5-flash"),
                     prompt
                });
 
+               console.log("AI review generated successfully", { textLength: text.length });
                return text;
           });
 
           await step.run("post-comment", async () => {
+               console.log("Posting review comment to GitHub");
                await postreviewComment(token, owner, repo, prNumber, review);
           });
 
@@ -81,20 +108,23 @@ Format your response in markdown.`;
                     }
                });
 
-               if (repository) {
-                    await prisma.review.create({
-                         data: {
-                              repositoryId: repository.id,
-                              prNumber,
-                              prTitle: title,
-                              prUrl: `https://github.com/${owner}/${repo}/pull/${prNumber}`,
-                              review,
-                              status: "completed",
-                         },
-                    });
+               if (!repository) {
+                    throw new Error(`Repository ${owner}/${repo} not found in database`);
                }
+
+               await prisma.review.create({
+                    data: {
+                         repositoryId: repository.id,
+                         prNumber,
+                         prTitle: title,
+                         prUrl: `https://github.com/${owner}/${repo}/pull/${prNumber}`,
+                         review,
+                         status: "completed"
+                    }
+               });
           });
 
+          console.log("Review generation completed successfully");
           return { success: true };
      }
 );

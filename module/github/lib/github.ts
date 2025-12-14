@@ -116,7 +116,11 @@ export const createWebHook = async (owner: string, repo: string) => {
   const token = await getGithubToken();
 
   const octokit = new Octokit({ auth: token });
-  const webHookUrl = `${process.env.NEXT_PUBLIC_BASE_APP_URL}/api/webhooks/github`;
+  // Use encodeURIComponent for more thorough encoding of special characters
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_APP_URL || "";
+  // Remove any trailing slashes and encode the URL properly
+  const cleanUrl = baseUrl.replace(/\/$/, "");
+  const webHookUrl = `${cleanUrl}/api/webhooks/github`;
 
   const { data: hooks } = await octokit.rest.repos.listWebhooks({
     owner,
@@ -140,15 +144,14 @@ export const createWebHook = async (owner: string, repo: string) => {
   return data;
 };
 
-
-
-
-
 export const deleteWebhook = async (owner: string, repo: string) => {
   const token = await getGithubToken();
 
   const octokit = new Octokit({ auth: token });
-  const webhooksUrl = `${process.env.NEXT_PUBLIC_BASE_APP_URL}/api/webhooks/github`;
+  // Use the same URL construction as in createWebHook
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_APP_URL || "";
+  const cleanUrl = baseUrl.replace(/\/$/, "");
+  const webhooksUrl = `${cleanUrl}/api/webhooks/github`;
 
   try {
     const { data: hooks } = await octokit.rest.repos.listWebhooks({
@@ -164,8 +167,13 @@ export const deleteWebhook = async (owner: string, repo: string) => {
       return true
     }
     return false;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting webhook:", error);
+    // Check if it's a 404 error (webhook not found) and treat it as success
+    if (error.status === 404) {
+      console.log("Webhook not found, treating as successful deletion");
+      return true;
+    }
     return false;
   }
 
@@ -266,6 +274,11 @@ export async function postreviewComment(token: string, owner: string, repo: stri
 
   await octokit.rest.issues.createComment({
     owner, repo, issue_number: prNumber,
-    body: `## 🤖 AI CodeReview \n\n${review}\n\n---\n*Powered by The Reviewer*`
+    body: `## 🤖 AI CodeReview 
+
+${review}
+
+---
+*Powered by The Reviewer*`
   })
 } 

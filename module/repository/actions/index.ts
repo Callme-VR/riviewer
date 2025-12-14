@@ -82,7 +82,7 @@ export const connectrepository = async (
 
     try {
       await inngest.send({
-        name: "repository-connnected",
+        name: "repository-connected", // Fixed to match the function event name
         data: {
           owner,
           repo,
