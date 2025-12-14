@@ -4,6 +4,7 @@ import { inngest } from "@/inngest/client";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/db";
 import { createWebHook, getRepositories } from "@/module/github/lib/github";
+import { CanConnectRepository, IncrementRepoCount } from "@/module/payment/subscriptions";
 import { headers } from "next/headers";
 
 export const fetchrepositories = async (
@@ -63,6 +64,11 @@ export const connectrepository = async (
 
     // todo:Check if the  user can connect more repos
 
+    const canConnect = await CanConnectRepository(session.user.id);
+    if (!canConnect) {
+      return { error: "You have reached your repository limit, please upgrade", status: 403 };
+    }
+
     const webhooks = await createWebHook(owner, repo);
 
     if (webhooks) {
@@ -77,7 +83,10 @@ export const connectrepository = async (
       });
     }
 
-    // todo:increment repository count for the user
+
+        // todo:increment repository count for the user /*done*/
+    await IncrementRepoCount(session.user.id);
+    
     // todo: trigger repository sync and indexing
 
     try {
@@ -105,3 +114,4 @@ export const connectrepository = async (
   }
 
 };
+

@@ -18,6 +18,10 @@ model User {
   sessions      Session[]
   accounts      Account[]
   repositories  Repository[]
+  userUsage     UserUsage?
+
+  subscriptionsTier  String  @default("FREE")
+  subscriptionStatus String?
 
   @@unique([email])
   @@map("user")
@@ -54,6 +58,19 @@ model Review {
 
   @@index([repositoryId])
   @@map("review")
+}
+
+model UserUsage {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  repositoryCount Int      @default(0)
+  reviewCount     Json     @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("user_usage")
 }
 
 model Session {
