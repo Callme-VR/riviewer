@@ -14,7 +14,7 @@ import { checkout, customer } from "@/lib/payment-actions";
 import { useSearchParams } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { toast } from "sonner";
 import {
   GetSubscriptionData,
@@ -103,7 +103,17 @@ const PLAN_FEATURES = {
   ],
 };
 
-export default function SubscriptionsPage() {
+// Loading component for Suspense fallback
+function SubscriptionsLoading() {
+  return (
+    <div className="flex h-full justify-center items-center min-h-screen">
+      <Spinner />
+    </div>
+  );
+}
+
+// Main subscription content component
+function SubscriptionsContent() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
   const [syncLoading, setSyncLoading] = useState(false);
@@ -193,11 +203,7 @@ export default function SubscriptionsPage() {
   }, [success, refetch]);
 
   if (isLoading) {
-    return (
-      <div className="flex h-full justify-center items-center min-h-screen">
-        <Spinner />
-      </div>
-    );
+    return <SubscriptionsLoading />;
   }
 
   if (error) {
@@ -447,5 +453,14 @@ export default function SubscriptionsPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+// Main page component wrapped in Suspense
+export default function SubscriptionsPage() {
+  return (
+    <Suspense fallback={<SubscriptionsLoading />}>
+      <SubscriptionsContent />
+    </Suspense>
   );
 }

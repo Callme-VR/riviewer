@@ -39,7 +39,7 @@ export const auth = betterAuth({
             },
           ],
           successUrl: process.env.POLAR_SUCCESS_URL || "http://localhost:3000/dashboard/subscription?success=true",
-          authenticatedUsersOnly: true,
+          authenticatedUsersOnly: false, // Allow checkout without forcing re-authentication
         }),
         portal({
           returnUrl:
