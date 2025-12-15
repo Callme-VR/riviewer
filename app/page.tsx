@@ -1,8 +1,10 @@
 import { AuthWrapper } from "@/components/AuthWrapper";
-import { redirect } from "next/navigation";
+import LoginUI from "@/module/auth/components/Loginui";
 
 export default function HomePage() {
-  // Redirect to dashboard - auth will be handled by the dashboard layout
-  
-  redirect('/dashboard');
+  return (
+    <AuthWrapper>
+      <LoginUI />
+    </AuthWrapper>
+  );
 }

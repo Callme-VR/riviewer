@@ -1,40 +1,31 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from "@/lib/auth-client";
 import Loginui from "@/module/auth/components/Loginui";
+import { Spinner } from '@/components/ui/spinner';
 
 export default function LoginPage() {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState(true);
+    const { data: session, isPending } = useSession();
 
     useEffect(() => {
-        async function checkAuth() {
-            try {
-                const res = await fetch('/api/auth/session');
-                if (res.ok) {
-                    const session = await res.json();
-                    if (session?.user) {
-                        router.push('/dashboard');
-                        return;
-                    }
-                }
-            } catch (error) {
-                console.error('Auth check failed:', error);
-            } finally {
-                setIsLoading(false);
-            }
+        if (session?.user) {
+            router.push('/dashboard');
         }
+    }, [session, router]);
 
-        checkAuth();
-    }, [router]);
-
-    if (isLoading) {
+    if (isPending) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+                <Spinner />
             </div>
         );
+    }
+
+    if (session?.user) {
+        return null; // Will redirect
     }
 
     return (

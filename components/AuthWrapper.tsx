@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-client-wrapper";
+import { useSession } from "@/lib/auth-client";
 
 interface AuthWrapperProps {
   children: React.ReactNode;
@@ -10,19 +10,15 @@ interface AuthWrapperProps {
 
 export function AuthWrapper({ children }: AuthWrapperProps) {
   const router = useRouter();
-  const { session, isLoading } = useAuth();
-  const [isClient, setIsClient] = useState(false);
-
-  useState(() => {
-    setIsClient(true);
-  });
+  const { data: session, isPending } = useSession();
+  const [isClient] = useState(() => typeof window !== "undefined");
 
   useEffect(() => {
     // If we're not loading and there's no session, redirect to login
-    if (isClient && !isLoading && !session) {
+    if (isClient && !isPending && !session) {
       router.push("/login");
     }
-  }, [session, isLoading, router, isClient]);
+  }, [session, isPending, router, isClient]);
 
   // While checking auth or if user is authenticated, render children
   // If not authenticated, the effect will redirect

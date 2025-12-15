@@ -18,14 +18,9 @@ export default function Logout({
   const handleLogout = useCallback(async () => {
     try {
       // Sign out and wait for the promise to resolve
-      await signOut({
-        fetchOptions: {
-          onSuccess: () => {
-            // Redirect immediately after successful sign out
-            router.push(redirectUrl);
-          }
-        }
-      });
+      await signOut();
+      // Redirect immediately after successful sign out
+      router.push(redirectUrl);
     } catch (error) {
       console.error("Logout error:", error);
       // Even if there's an error, still redirect to login page

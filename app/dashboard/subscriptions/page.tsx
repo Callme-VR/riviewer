@@ -10,17 +10,43 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Loader2, ExternalLink, RefreshCw } from "lucide-react";
-import { useSearchParams } from "";
+import { checkout, customer } from "@/lib/payment-actions";
+import { useSearchParams } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   GetSubscriptionData,
   syncSubscriptionStatus,
 } from "@/module/payment/action";
 import { Spinner } from "@/components/ui/spinner";
-import { checkout, customer } from "@/lib/auth-client";
+import { UserLimits } from "@/module/payment/subscriptions";
+
+interface SubscriptionData {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    polarCustomerId: string | null;
+    subscriptionStatus: string | null;
+    subscriptionTier: string | null;
+    polarSubscriptionId: string | null;
+  } | null;
+  limits: UserLimits | null;
+}
+
+// Wrapper function to handle the server action properly
+const fetchSubscriptionData = async (): Promise<SubscriptionData> => {
+  try {
+    // Call the server action
+    const result = await GetSubscriptionData();
+    return result;
+  } catch (error) {
+    console.error("Error fetching subscription data:", error);
+    throw error;
+  }
+};
 
 const PLAN_FEATURES = {
   free: [
@@ -84,10 +110,11 @@ export default function SubscriptionsPage() {
   const searchParams = useSearchParams();
   const success = searchParams.get("success");
 
-  const { data, error, refetch, isLoading } = useQuery({
+  const { data, error, refetch, isLoading } = useQuery<SubscriptionData>({
     queryKey: ["subscriptions-data"],
-    queryFn: GetSubscriptionData,
+    queryFn: fetchSubscriptionData,
     refetchOnWindowFocus: true,
+    retry: false,
   });
 
   const currentTier = data?.user?.subscriptionTier?.toLowerCase() as
@@ -95,7 +122,6 @@ export default function SubscriptionsPage() {
     | "pro"
     | undefined;
   const isPro = currentTier === "pro";
-  const isActive = data?.user?.subscriptionStatus === "ACTIVE";
 
   const handleSync = async () => {
     setSyncLoading(true);
@@ -105,37 +131,66 @@ export default function SubscriptionsPage() {
         toast.success("Subscription status synced successfully");
         refetch();
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to sync subscription status");
     } finally {
       setSyncLoading(false);
     }
   };
 
-  const handleUpgrade = async () => {
+  const handleCheckout = async () => {
     try {
-      await setCheckoutLoading(true);
-      await checkout({
-        slug: "Pro",
-      });
+      setCheckoutLoading(true);
+      const result = await checkout();
+      
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
+      
+      // Success - redirect will happen automatically
+      toast.success("Redirecting to checkout...");
     } catch (error) {
       toast.error("Failed to start checkout process");
+      console.error("Checkout error:", error);
     } finally {
       setCheckoutLoading(false);
     }
   };
 
-  const handleManagesubscription = async () => {
-    setPortalLoading(true);
+  const handlePortal = async () => {
     try {
       setPortalLoading(true);
-      await customer.portal();
+      const result = await customer.portal();
+      
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
+      
+      // Success - redirect will happen automatically
+      toast.success("Opening customer portal...");
     } catch (error) {
-      toast.error("Failed to start checkout process");
+      toast.error("Failed to open customer portal");
+      console.error("Portal error:", error);
     } finally {
       setPortalLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (success === "true") {
+      const sync = async () => {
+        try {
+          await syncSubscriptionStatus();
+          refetch();
+        } catch (error) {
+          console.error("Error syncing subscription status:", error);
+        }
+      };
+      sync();
+    }
+  }, [success, refetch]);
 
   if (isLoading) {
     return (
@@ -249,16 +304,15 @@ export default function SubscriptionsPage() {
                 </div>
                 <div className="h-2 bg-muted overflow-hidden rounded-full">
                   <div
-                    className={`h-full ${
-                      data.limits.repositories.canAdd
-                        ? "bg-primary"
-                        : "bg-destructive"
-                    }`}
+                    className={`h-full ${data.limits.repositories.canAdd
+                      ? "bg-primary"
+                      : "bg-destructive"
+                      }`}
                     style={{
                       width: `${Math.min(
                         (data.limits.repositories.current /
                           (data.limits.repositories.limit || 1)) *
-                          100,
+                        100,
                         100
                       )}%`,
                     }}
@@ -320,9 +374,15 @@ export default function SubscriptionsPage() {
               variant={!isPro ? "default" : "outline"}
               className="w-full"
               disabled={!isPro}
-              onClick={() => !isPro && handlePortal()}
+              onClick={() => {
+                if (!isPro) {
+                  // Already on free plan
+                } else {
+                  handlePortal();
+                }
+              }}
             >
-              {!isPro ? "Current Plan" : "Downgrade"}
+              {!isPro ? "Current Plan" : "Manage Plan"}
             </Button>
           </CardFooter>
         </Card>

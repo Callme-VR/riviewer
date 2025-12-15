@@ -4,19 +4,31 @@
 import { useEffect, useState, useContext, createContext, ReactNode, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
+interface User {
+  id: string;
+  email?: string;
+  name?: string;
+  image?: string;
+}
+
+interface Session {
+  user: User | null;
+  expires: string;
+}
+
 interface AuthContextType {
-  session: any;
+  session: Session | null;
   isLoading: boolean;
   signIn: (provider: string) => Promise<void>;
   signOut: () => Promise<void>;
-  signUp: (userData: any) => Promise<void>;
+  signUp: (userData: Record<string, unknown>) => Promise<void>;
   refreshSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
 
@@ -74,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signUp = async (userData: any) => {
+  const signUp = async (userData: Record<string, unknown>) => {
     try {
       setIsLoading(true);
       const response = await fetch('/api/auth/signup', {
