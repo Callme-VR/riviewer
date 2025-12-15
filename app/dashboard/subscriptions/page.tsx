@@ -303,8 +303,7 @@ export default function SubscriptionsPage() {
                   </Badge>
                 </div>
                 <div className="h-2 bg-muted overflow-hidden rounded-full">
-                  <div
-                    className={`h-full ${data.limits.repositories.canAdd
+                  <div className={`h-full ${data.limits.repositories.canAdd
                       ? "bg-primary"
                       : "bg-destructive"
                       }`}

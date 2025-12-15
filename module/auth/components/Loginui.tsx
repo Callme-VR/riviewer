@@ -24,7 +24,7 @@ export default function LoginUI() {
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 z-50">
+    <div className="fixed inset-0 bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 z-50">
       <div className="h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-5xl mx-auto grid lg:grid-cols-2 gap-8 items-center">
           {/* Left section - Marketing */}
