@@ -23,6 +23,9 @@ model User {
   subscriptionsTier  String  @default("FREE")
   subscriptionStatus String?
 
+  PolarSubscriptionId String? @unique
+  PolarCustomerId     String? @unique
+
   @@unique([email])
   @@map("user")
 }

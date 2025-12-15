@@ -9,6 +9,7 @@ import {
 import { headers } from "next/headers";
 import { Octokit } from "octokit";
 
+// Make sure auth is only used in server context
 export const getContributionState = async () => {
   try {
     const session = await auth.api.getSession({

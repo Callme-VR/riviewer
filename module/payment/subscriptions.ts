@@ -190,16 +190,37 @@ export async function getRemainingLimits(userId: string): Promise<UserLimits> {
 export async function updateUserTier(
   userId: string,
   tier: SubscriptionsTier,
-  status: SubscriptionStatus
+  status: SubscriptionStatus,
+  subscriptionId?: string
+): Promise<void> {
+  const updateData: any = {
+    subscriptionStatus: status,
+    subscriptionsTier: tier,
+  };
+  
+  // Only update subscription ID if provided
+  if (subscriptionId) {
+    updateData.PolarSubscriptionId = subscriptionId;
+  }
+  
+  await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: updateData,
+  });
+}
+
+export async function updatePolarCustomerId(
+  userId: string,
+  PolarCustomerId: string
 ): Promise<void> {
   await prisma.user.update({
     where: {
       id: userId,
     },
     data: {
-      subscriptionStatus: status,
-      subscriptionsTier: tier,
+      PolarCustomerId,
     },
   });
-  // todo for the polar subscription payments
 }

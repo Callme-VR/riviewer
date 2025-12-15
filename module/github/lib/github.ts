@@ -167,14 +167,10 @@ export const deleteWebhook = async (owner: string, repo: string) => {
       return true
     }
     return false;
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error deleting webhook:", error);
     // Check if it's a 404 error (webhook not found) and treat it as success
-    if (error.status === 404) {
-      console.log("Webhook not found, treating as successful deletion");
-      return true;
-    }
-    return false;
+
   }
 
 }
