@@ -25,7 +25,7 @@ export const auth = betterAuth({
       scope: ["repo"],
     },
   },
-  trustedOrigins: ["http://localhost:3000", "https://9fc244dbdff5.ngrok-free.app"],
+  trustedOrigins: ["http://localhost:3000", "https://9fc244dbdff5.ngrok-free.app", "https://riviewer.vercel.app"],
   plugins: [
     polar({
       client: polarClient,
@@ -38,13 +38,13 @@ export const auth = betterAuth({
               slug: "Coder", // Custom slug for easy reference in Checkout URL, e.g. /checkout/CodeReview
             },
           ],
-          successUrl: process.env.POLAR_SUCCESS_URL || "http://localhost:3000/dashboard/subscription?success=true",
+          successUrl: process.env.POLAR_SUCCESS_URL || "https://riviewer.vercel.app/dashboard/subscription?success=true",
           authenticatedUsersOnly: false, // Allow checkout without forcing re-authentication
         }),
         portal({
           returnUrl:
             process.env.NEXT_PUBLIC_BASE_APP_URL ||
-            "http://localhost:3000/dashboard",
+            "https://riviewer.vercel.app/dashboard",
         }),
         usage(),
         webhooks({

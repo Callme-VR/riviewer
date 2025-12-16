@@ -65,8 +65,8 @@ Create a `.env.local` file in the root directory with the following variables:
 DATABASE_URL=postgresql://user:password@localhost:5432/reviewer
 
 # Next.js
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_BASE_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=https://riviewer.vercel.app
+NEXT_PUBLIC_BASE_APP_URL=https://riviewer.vercel.app
 
 # GitHub OAuth
 GITHUB_CLIENT_ID=your_github_client_id
@@ -81,7 +81,7 @@ PINECONE_API_KEY=your_pinecone_api_key
 # Polar.sh
 POLAR_ACCESS_TOKEN=your_polar_access_token
 POLAR_WEBHOOK_SECRET=your_polar_webhook_secret
-POLAR_SUCCESS_URL=http://localhost:3000/dashboard/subscription?success=true
+POLAR_SUCCESS_URL=https://riviewer.vercel.app/dashboard/subscription?success=true
 
 # Inngest
 INNGEST_SIGNING_KEY=your_inngest_signing_key
