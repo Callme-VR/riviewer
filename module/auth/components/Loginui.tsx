@@ -14,7 +14,7 @@ export default function LoginUI() {
     try {
       await signIn.social({
         provider: "github",
-        callbackURL: "/dashboard"
+        callbackURL: process.env.NEXT_PUBLIC_APP_URL + "/dashboard"
       });
     } catch (error) {
       console.log("Login error:", error);
