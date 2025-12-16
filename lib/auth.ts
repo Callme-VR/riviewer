@@ -25,7 +25,7 @@ export const auth = betterAuth({
       scope: ["repo"],
     },
   },
-  trustedOrigins: ["http://localhost:3000", "https://9fc244dbdff5.ngrok-free.app", "https://riviewer.vercel.app"],
+  trustedOrigins: ["https://riviewer.vercel.app"],
   plugins: [
     polar({
       client: polarClient,
