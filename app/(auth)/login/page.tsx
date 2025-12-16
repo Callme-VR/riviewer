@@ -12,7 +12,14 @@ export default function LoginPage() {
 
     useEffect(() => {
         if (session?.user) {
-            router.push('/dashboard');
+            // Check for stored redirect destination from sessionStorage
+            const storedRedirect = sessionStorage.getItem("postLoginRedirect");
+            if (storedRedirect) {
+                sessionStorage.removeItem("postLoginRedirect"); // Clear the stored redirect
+                router.push(storedRedirect);
+            } else {
+                router.push('/dashboard');
+            }
         }
     }, [session, router]);
 

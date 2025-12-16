@@ -8,39 +8,35 @@ datasource db {
 }
 
 model User {
-  id            String       @id
-  name          String
-  email         String
-  emailVerified Boolean      @default(false)
-  image         String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  repositories  Repository[]
-  userUsage     UserUsage?
+  id                  String       @id
+  name                String
+  email               String       @unique
+  emailVerified       Boolean      @default(false)
+  image               String?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  subscriptionStatus  String?
+  subscriptionsTier   String       @default("FREE")
+  PolarCustomerId     String?      @unique
+  PolarSubscriptionId String?      @unique
+  accounts            Account[]
+  repositories        Repository[]
+  sessions            Session[]
+  userUsage           UserUsage?
 
-  subscriptionsTier  String  @default("FREE")
-  subscriptionStatus String?
-
-  PolarSubscriptionId String? @unique
-  PolarCustomerId     String? @unique
-
-  @@unique([email])
   @@map("user")
 }
 
 model Repository {
-  id       String @id @default(cuid())
-  githubId BigInt @unique
-  name     String
-  owner    String
-  url      String
-  userId   String
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  id        String   @id @default(cuid())
+  githubId  BigInt   @unique
+  name      String
+  owner     String
+  url       String
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   Reviews   Review[]
 
   @@index([userId])
@@ -50,28 +46,27 @@ model Repository {
 model Review {
   id           String     @id @default(cuid())
   repositoryId String
-  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
   prNumber     Int
   prTitle      String
   prUrl        String
-  review       String     @db.Text
+  review       String
   status       String     @default("Completed")
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  repository   Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
 
   @@index([repositoryId])
   @@map("review")
 }
 
 model UserUsage {
-  id     String @id @default(cuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  id              String   @id @default(cuid())
+  userId          String   @unique
   repositoryCount Int      @default(0)
   reviewCount     Json     @default("{}")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_usage")
 }
@@ -79,7 +74,7 @@ model UserUsage {
 model Session {
   id        String   @id
   expiresAt DateTime
-  token     String
+  token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ipAddress String?
@@ -87,7 +82,6 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
   @@index([userId])
   @@map("session")
 }
@@ -97,7 +91,6 @@ model Account {
   accountId             String
   providerId            String
   userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -107,6 +100,7 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("account")

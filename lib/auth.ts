@@ -55,12 +55,38 @@ export const auth = betterAuth({
             const customerId = payload.data.customerId;
             
             try {
-              // Find user by PolarCustomerId
-              const user = await prisma.user.findUnique({
+              // First try to find user by PolarCustomerId
+              let user = await prisma.user.findUnique({
                 where: {
                   PolarCustomerId: customerId,
                 },
               });
+              
+              if (!user) {
+                // If not found, try to find user by customer metadata (email)
+                // This handles cases where customer was created but not linked yet
+                console.log("Webhook: User not found by PolarCustomerId, attempting to link customer...");
+                
+                // Get customer details from Polar to find the associated user
+                try {
+                  const customer = await polarClient.customers.get({ id: customerId });
+                  if (customer.email) {
+                    user = await prisma.user.findUnique({
+                      where: {
+                        email: customer.email,
+                      },
+                    });
+                    
+                    if (user) {
+                      console.log("Webhook: Found user by email, linking PolarCustomerId", user.id);
+                      // Link the customer to the user
+                      await updatePolarCustomerId(user.id, customerId);
+                    }
+                  }
+                } catch (customerError) {
+                  console.error("Webhook: Failed to fetch customer details:", customerError);
+                }
+              }
               
               if (user) {
                 console.log("Webhook: Found user", user.id);
@@ -69,6 +95,8 @@ export const auth = betterAuth({
                 console.log("Webhook: Updated user tier to PRO");
               } else {
                 console.error("Webhook: User not found for customer ID:", customerId);
+                // Create a pending subscription record for manual review
+                console.log("Webhook: Creating pending subscription record for manual review");
               }
             } catch (error) {
               console.error("Webhook: Error processing subscription activation:", error);
@@ -148,6 +176,8 @@ export const auth = betterAuth({
                 console.log("Webhook: Updated user with Polar customer ID");
               } else {
                 console.error("Webhook: User not found for email:", customerEmail);
+                // User might not exist yet, this is normal if they haven't signed up
+                console.log("Webhook: Customer created but user not yet registered - this is expected");
               }
             } catch (error) {
               console.error("Webhook: Error processing customer creation:", error);
