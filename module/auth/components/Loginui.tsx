@@ -45,12 +45,12 @@ export default function LoginUI() {
             <div className="space-y-4">
               <h1 className="text-3xl lg:text-5xl font-bold text-white leading-tight">
                 Cut Code Review
-                <span className="block">Time & Bugs in Half.</span>
+                <span className="block">Time & Bugs in less Time solve.</span>
                 <span className="block">Instantly.</span>
               </h1>
 
               <p className="text-base text-slate-300 leading-relaxed max-w-md">
-                Supercharge your team to ship faster with the most advanced AI
+                Supercharge your team to ship faster with  AI
                 code reviews.
               </p>
             </div>
@@ -85,14 +85,14 @@ export default function LoginUI() {
 
                 <div className="space-y-4 text-center text-sm text-slate-300">
                   <div>
-                    New to CodeHorse?{" "}
+                    New to Reviwer?{" "}
                     <a href="#" className="text-white hover:text-slate-200 font-medium">
                       Continue with Reviwer
                     </a>
                   </div>
                   <div>
                     <a href="#" className="text-white hover:text-slate-200 font-medium">
-                      Self-Hosted Services
+                      Self-issue Checking Feature.
                     </a>
                   </div>
                 </div>
