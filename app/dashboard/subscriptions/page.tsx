@@ -22,6 +22,12 @@ import {
 } from "@/module/payment/action";
 import { Spinner } from "@/components/ui/spinner";
 import { UserLimits } from "@/module/payment/subscriptions";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Subscriptions | Reviewer",
+  description: "Subscriptions",
+};
 
 interface SubscriptionData {
   user: {
@@ -152,12 +158,12 @@ function SubscriptionsContent() {
     try {
       setCheckoutLoading(true);
       const result = await checkout();
-      
+
       if (result.error) {
         toast.error(result.error);
         return;
       }
-      
+
       // Success - redirect will happen automatically
       toast.success("Redirecting to checkout...");
     } catch (error) {
@@ -172,12 +178,12 @@ function SubscriptionsContent() {
     try {
       setPortalLoading(true);
       const result = await customer.portal();
-      
+
       if (result.error) {
         toast.error(result.error);
         return;
       }
-      
+
       // Success - redirect will happen automatically
       toast.success("Opening customer portal...");
     } catch (error) {
@@ -309,15 +315,17 @@ function SubscriptionsContent() {
                   </Badge>
                 </div>
                 <div className="h-2 bg-muted overflow-hidden rounded-full">
-                  <div className={`h-full ${data.limits.repositories.canAdd
-                      ? "bg-primary"
-                      : "bg-destructive"
-                      }`}
+                  <div
+                    className={`h-full ${
+                      data.limits.repositories.canAdd
+                        ? "bg-primary"
+                        : "bg-destructive"
+                    }`}
                     style={{
                       width: `${Math.min(
                         (data.limits.repositories.current /
                           (data.limits.repositories.limit || 1)) *
-                        100,
+                          100,
                         100
                       )}%`,
                     }}

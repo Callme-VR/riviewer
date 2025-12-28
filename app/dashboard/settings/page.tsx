@@ -1,5 +1,11 @@
 import ProfileForm from "@/module/settings/components/profile-form";
 import RepositoryList from "@/module/settings/components/repo-all";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Settings | Reviewer",
+  description: "Settings",
+};
 
 export default function SettingsPage() {
   return (
@@ -8,8 +14,8 @@ export default function SettingsPage() {
       <p className="text-sm text-muted-foreground">
         Manage your application settings here.
       </p>
-      <ProfileForm/>
-      <RepositoryList/>
+      <ProfileForm />
+      <RepositoryList />
     </div>
   );
 }
