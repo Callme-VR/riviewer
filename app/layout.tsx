@@ -1,24 +1,30 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins, Geist, Fira_Code } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { AuthProvider } from "@/lib/auth-client-wrapper";
+
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const firaCode = Fira_Code({
+  variable: "--font-fira-code",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "AI powered Code Review and Corrections Tool - Reviewers",
+  title: "Reviewers - AI Powered Code Review on Autopilot",
   description:
-    "Reviewers is an AI-powered code review and correction tool that helps developers identify bugs, improve code quality, and streamline the code review process. Boost your productivity with intelligent code analysis and suggestions.",
+    "Stop merging bugs. Let AI review your PRs instantly, enforce style guides, and catch security issues before your team does.",
   icons: {
     icon: "/favicon.ico",
   },
@@ -32,13 +38,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${poppins.variable} ${geistSans.variable} ${firaCode.variable} antialiased font-sans`}
       >
         <AuthProvider>
           <QueryProvider>
             <ThemeProvider
               attribute="class"
-              defaultTheme="system"
+              defaultTheme="light"
               enableSystem
               disableTransitionOnChange
             >

@@ -1,14 +1,29 @@
 import { Suspense } from "react";
-import { AuthWrapper } from "@/components/AuthWrapper";
-import LoginUI from "@/module/auth/components/Loginui";
+import { Navbar } from "@/components/landing/Navbar";
+import { Hero } from "@/components/landing/Hero";
+import { Features } from "@/components/landing/Features";
+import { SocialProof } from "@/components/landing/SocialProof";
+import { Pricing } from "@/components/landing/Pricing";
+import { Footer } from "@/components/landing/Footer";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function HomePage() {
   return (
-    <Suspense fallback={<div className="flex h-screen items-center justify-center"><Spinner /></div>}>
-      <AuthWrapper>
-        <LoginUI />
-      </AuthWrapper>
+    <Suspense
+      fallback={
+        <div className="flex h-screen items-center justify-center">
+          <Spinner />
+        </div>
+      }
+    >
+      <main className="min-h-screen bg-background">
+        <Navbar />
+        <Hero />
+        <Features />
+        <SocialProof />
+        <Pricing />
+        <Footer />
+      </main>
     </Suspense>
   );
 }

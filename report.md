@@ -1,77 +1,60 @@
-# Project Analysis Report: Reviewer
+# Design & Codebase Analysis Report
 
-## 1. Project Overview
-**Reviewer** is an AI-powered code review automation platform designed to integrate seamlessly with GitHub. It leverages Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) to provide context-aware, high-quality feedback on Pull Requests. By analyzing the PR diff alongside relevant codebase context stored in a vector database, Reviewer helps developers catch bugs, improve code quality, and maintain consistency.
+## 1. Executive Summary
+The project currently suffers from a "split personality" in its design execution. The foundation (`globals.css`) is configured for a bold, distinctive **Neo-Brutalism / Pop Art** aesthetic with a vibrant color palette (Pink, Teal, Cream). However, the actual implemented UI (specifically `LoginUI.tsx`) ignores this system entirely, reverting to a generic "Dark Mode SaaS" slate theme.
 
-## 2. Tech Stack
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
-- **Language**: TypeScript
-- **Database**: PostgreSQL (via [Prisma ORM](https://www.prisma.io/))
-- **Authentication**: [Better Auth](https://better-auth.com/) with GitHub Social Provider
-- **AI/LLM**: [Google Gemini 1.5 Flash](https://ai.google.dev/) (via [Vercel AI SDK](https://sdk.vercel.ai/))
-- **Vector Database**: [Pinecone](https://www.pinecone.io/) for RAG
-- **Background Jobs**: [Inngest](https://www.inngest.com/) for reliable, serverless-friendly workflow orchestration
-- **Payments/Subscriptions**: [Polar.sh](https://polar.sh/)
-- **UI Components**: [Shadcn UI](https://ui.shadcn.com/) (Tailwind CSS, Radix UI)
-- **API Clients**: Octokit (GitHub), Polar SDK
+By aligning the application with its own configuration, we can create a unique, memorable brand identity that stands out from the sea of "dark mode blue" developer tools.
 
-## 3. Architecture & Structure
-The project follows a modular, feature-based architecture within the `module/` directory, promoting separation of concerns and maintainability.
+## 2. Key Findings
 
-- `app/`: Next.js App Router routes and page-level layouts.
-- `components/`: Shared UI components (Shadcn UI) and global providers.
-- `module/`: Core business logic organized by domain:
-  - `ai/`: RAG implementation, embedding generation, and AI prompts.
-  - `auth/`: Authentication UI and utilities.
-  - `github/`: GitHub API integration (Octokit).
-  - `payment/`: Subscription management and Polar configuration.
-  - `repository/`: Repository connection and management logic.
-  - `review/`: Core review generation actions.
-  - `settings/`: User profile and repository configuration.
-- `inngest/`: Background job definitions (e.g., handling GitHub webhooks, indexing codebases, generating reviews).
-- `lib/`: Shared utilities, database client, and auth configuration.
-- `prisma/`: Database schema and migrations.
+### A. Design Inconsistency (Critical)
+- **Global Config:** `globals.css` defines a light-mode-first, high-contrast palette:
+  - **Background:** Light Pink (`#f6e6ee`)
+  - **Primary:** Magenta (`#d04f99`)
+  - **Secondary:** Teal (`#8acfd1`)
+  - **Shadows:** Hard, offset shadows (`3px 3px 0px 0px`), typical of Neo-Brutalism.
+- **Implementation:** `LoginUI.tsx` hardcodes arbitrary colors:
+  - `bg-linear-to-br from-slate-900...`
+  - `text-slate-300`
+- **Result:** The login page looks like a completely different product from what the CSS variables dictate.
 
-## 4. Key Features
-- **Automated PR Reviews**: Automatically triggers a review when a new PR is opened or updated on a connected repository.
-- **Context-Aware Feedback (RAG)**: Indexes the entire codebase into Pinecone to retrieve relevant code context for more accurate reviews.
-- **GitHub Integration**: Single-click repository connection and automatic webhook management.
-- **Subscription Tiers**: Free and Pro (Coder) tiers with usage limits (e.g., number of repositories, reviews per repo).
-- **Interactive Dashboard**: View connected repositories, review history, and subscription status.
-- **Contribution Graph**: Visual representation of AI-assisted review activity.
+### B. Typography Disconnect
+- **CSS Definitions:** `globals.css` expects:
+  - Sans: `Poppins`
+  - Serif: `Lora`
+  - Mono: `Fira Code`
+- **Actual Loading:** `app/layout.tsx` loads **Geist** and **Geist Mono**.
+- **Impact:** The intended font stack is never loaded. The browser likely falls back to system fonts for `Poppins` and `Lora`, or uses `Geist` if the variables aren't mapped correctly.
 
-## 5. Database Schema Overview (Prisma)
-The schema is designed for multi-tenancy and robust tracking of AI interactions.
-- **User / Account / Session**: Core authentication models (Better Auth compatible).
-- **Repository**: Stores connected GitHub repositories, including metadata like `owner`, `repoName`, and `webhookSecret`.
-- **Review**: Records each AI-generated review, linking it to a repository and storing the feedback content.
-- **UserUsage**: Tracks usage metrics (repos connected, reviews generated) to enforce subscription limits.
-- **SubscriptionTier (Enum)**: `FREE`, `PRO`, etc.
+### C. UX & Structure
+- **No Landing Page:** The root route (`/`) immediately shows a login modal. There is no product explanation, value proposition, or social proof for new visitors.
+- **Copywriting:** The current copy in `LoginUI` contains grammatical errors: "Cut Code Review Time & Bugs in less Time solve."
 
-## 6. Authentication Flow
-- Powered by **Better Auth**.
-- **Social Login**: Exclusively uses GitHub for authentication.
-- **Polar Integration**: The `polar` plugin for Better Auth synchronizes user data with Polar.sh and handles subscription webhooks (active, canceled, revoked) to update the user's `subscriptionsTier` in real-time.
+## 3. Recommendations
 
-## 7. AI/RAG Integration
-- **Indexing**: When a repository is connected, its files are fetched, chunked, and embedded using `google.textEmbedding`. These embeddings are stored in Pinecone with metadata.
-- **Retrieval**: For a given PR, the system generates a search query based on the PR title and description. It then retrieves the top-K most relevant code snippets from Pinecone.
-- **Generation**: The PR diff (retrieved via Octokit) and the retrieved code context are combined into a prompt for `gemini-1.5-flash`.
-- **Result**: A structured Markdown review is generated and posted back to GitHub as a comment.
+### Phase 1: Unify the Design System
+1.  **Embrace the "Pop" Aesthetic:** Switch the Landing Page to use the `globals.css` variables.
+    - Use `bg-background` (Light Pink) instead of Slate 900.
+    - Use `text-foreground` (Dark Grey) instead of White.
+    - Use `bg-card` (Cream) with `shadow-md` (Hard Shadow) for the login container.
+2.  **Fix Typography:**
+    - Update `app/layout.tsx` to load `Poppins` and `Fira Code` (via `next/font/google`).
+    - Bind them to the CSS variables `--font-sans` and `--font-mono`.
 
-## 8. Payment & Subscription (Polar)
-- **Integration**: Uses the Polar SDK and Better Auth plugin.
-- **Product**: A 'Coder' product is defined in Polar for the PRO tier.
-- **Enforcement**: Server actions in `module/payment/subscriptions.ts` check the user's tier and usage counts from `UserUsage` before allowing new repository connections or reviews.
+### Phase 2: Build a Real Landing Page
+Instead of a login wall, create a structured landing page with:
+- **Hero Section:** Clear value prop, "Connect with GitHub" CTA.
+- **Features Grid:** Show *what* the tool does (Automated reviews, bug detection).
+- **Interactive Demo:** A static representation of a "Code Review" card to show the tool in action.
 
-## 9. GitHub Integration
-- **OAuth**: Obtains access tokens during the authentication process.
-- **Webhooks**: Automatically creates a webhook on the user's repository to listen for `pull_request` events.
-- **Octokit**: Used for fetching repository file structures (for indexing), retrieving PR diffs, and posting review comments.
+### Phase 3: Polish & "Juice"
+- **Hard Shadows:** Ensure all cards and buttons use the `3px 3px 0px` shadow defined in `globals.css`.
+- **Borders:** Thick, consistent borders (2px or 3px) in `border-primary` or `border-black` to match the Neo-Brutalism vibe.
+- **Animations:** Use `tw-animate-css` for bouncy, playful entrances on buttons and cards.
 
-## 10. Future Recommendations
-- **Improved Chunking**: Implement smarter code-aware chunking (e.g., by function or class) rather than fixed-size slices to improve RAG quality.
-- **Multi-Model Orchestration**: Allow users to toggle between models (e.g., Gemini Flash for speed, Gemini Pro for depth).
-- **Review Quality Feedback**: Allow users to "thumbs up/down" AI comments to fine-tune future prompt versions.
-- **Enterprise Features**: Support for GitHub Enterprise and self-hosted deployments.
-- **Performance**: Optimize the indexing process for very large repositories (multi-stage indexing or parallel processing).
+## 4. Technical Improvements
+- **Remove Hardcoded Colors:** Audit all components (especially `module/auth`) and replace `bg-slate-xxx` with `bg-muted`, `bg-card`, etc.
+- **Accessibility:** The current pink/teal contrast needs to be checked against WCAG standards. The text color `#5b5b5b` on `#f6e6ee` is likely safe, but white text on teal/pink buttons needs verification.
+
+---
+**Status:** Ready for Design Specification
