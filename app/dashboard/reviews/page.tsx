@@ -8,12 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import { CheckCircle2, XCircle, Clock } from "lucide-react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Review | Repository",
-  description: "Repositories",
-};
 
 export default function ReviewsPage() {
   const {

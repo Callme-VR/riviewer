@@ -22,12 +22,6 @@ import {
 } from "@/module/payment/action";
 import { Spinner } from "@/components/ui/spinner";
 import { UserLimits } from "@/module/payment/subscriptions";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Subscriptions | Reviewer",
-  description: "Subscriptions",
-};
 
 interface SubscriptionData {
   user: {

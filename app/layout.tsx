@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   title: "AI powered Code Review and Corrections Tool - Reviewers",
   description:
     "Reviewers is an AI-powered code review and correction tool that helps developers identify bugs, improve code quality, and streamline the code review process. Boost your productivity with intelligent code analysis and suggestions.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

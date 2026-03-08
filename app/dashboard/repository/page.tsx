@@ -16,12 +16,6 @@ import { useState, useEffect, useRef } from "react";
 import { useRepositories } from "@/module/repository/hooks/use-repositories";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useConnectRepository } from "@/module/repository/hooks/use-connect-repositories";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Repositories | Reviewers",
-  description: "Repositories",
-};
 
 interface Repository {
   id: number;
