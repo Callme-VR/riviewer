@@ -32,7 +32,7 @@ export const Navbar = () => {
               className="brightness-125"
             />
           </div>
-          <span className="font-bricolage text-base sm:text-lg font-bold tracking-tight text-white hidden sm:block cursor-pointer">
+          <span className="font-bricolage text-base sm:text-lg font-bold tracking-tight text-white cursor-pointer">
             Reviewers
           </span>
         </Link>
