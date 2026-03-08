@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { motion, Variants } from "framer-motion";
 
 const testimonials = [
   {
@@ -23,20 +24,58 @@ const testimonials = [
 ];
 
 export const SocialProof = () => {
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
     <section className="bg-[#0a0a0a] py-20 sm:py-32 px-4 sm:px-6 lg:px-12">
       <div className="container mx-auto">
-        <div className="mb-16 sm:mb-20 text-center">
-          <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-6xl">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={containerVariants}
+          className="mb-16 sm:mb-20 text-center"
+        >
+          <motion.h2
+            variants={itemVariants}
+            className="font-serif text-3xl font-medium tracking-tight text-white sm:text-6xl"
+          >
             Developers love us{" "}
             <span className="italic font-normal text-white/40">(mostly).</span>
-          </h2>
-        </div>
+          </motion.h2>
+        </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={containerVariants}
+          className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+        >
           {testimonials.map((t, i) => (
-            <div
+            <motion.div
               key={i}
+              variants={itemVariants}
               className="group relative rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8 transition-all hover:bg-white/10"
             >
               <div className="flex items-center gap-4">
@@ -57,9 +96,9 @@ export const SocialProof = () => {
               <p className="mt-4 sm:mt-6 font-sans text-sm sm:text-base text-white/60 leading-relaxed italic">
                 "{t.text}"
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

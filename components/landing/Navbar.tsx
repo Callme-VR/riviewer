@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth-client";
 import { ChevronRight } from "lucide-react";
 import { ModeToggle } from "@/components/ModeToggle";
+import { motion } from "framer-motion";
 
 export const Navbar = () => {
   const handleLogin = async () => {
@@ -20,7 +21,12 @@ export const Navbar = () => {
   };
 
   return (
-    <div className="fixed top-6 z-50 flex w-full justify-center px-4">
+    <motion.div
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
+      className="fixed top-6 z-50 flex w-full justify-center px-4"
+    >
       <nav className="flex h-14 items-center gap-4 sm:gap-8 rounded-full border border-white/10 bg-[#121212]/80 px-3 sm:px-6 py-2 backdrop-blur-xl shadow-2xl">
         <Link href="/" className="flex items-center gap-2">
           <div className="flex items-center justify-center rounded-lg bg-white/5 p-1.5 border border-white/10">
@@ -62,6 +68,6 @@ export const Navbar = () => {
           </Button>
         </div>
       </nav>
-    </div>
+    </motion.div>
   );
 };

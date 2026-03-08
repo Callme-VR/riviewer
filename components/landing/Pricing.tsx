@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Check, MoveRight } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
+import { motion, Variants } from "framer-motion";
 
 export const Pricing = () => {
   const handleLogin = async () => {
@@ -16,24 +17,64 @@ export const Pricing = () => {
     }
   };
 
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.21, 0.47, 0.32, 0.98],
+      },
+    },
+  };
+
   return (
     <section
       id="pricing"
       className="bg-[#0a0a0a] py-20 sm:py-32 px-4 sm:px-6 lg:px-12"
     >
       <div className="container mx-auto">
-        <div className="mb-16 sm:mb-24 text-center">
-          <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-6xl px-4">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={containerVariants}
+          className="mb-16 sm:mb-24 text-center"
+        >
+          <motion.h2
+            variants={itemVariants}
+            className="font-serif text-3xl font-medium tracking-tight text-white sm:text-6xl px-4"
+          >
             Simple pricing for{" "}
             <span className="italic font-normal text-orange-500">
               serious teams.
             </span>
-          </h2>
-        </div>
+          </motion.h2>
+        </motion.div>
 
-        <div className="mx-auto grid max-w-5xl gap-6 sm:gap-8 md:grid-cols-2">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={containerVariants}
+          className="mx-auto grid max-w-5xl gap-6 sm:gap-8 md:grid-cols-2"
+        >
           {/* Free Plan */}
-          <div className="group relative flex flex-col rounded-3xl border border-white/10 bg-white/5 p-8 sm:p-10 transition-all hover:border-white/20">
+          <motion.div
+            variants={itemVariants}
+            className="group relative flex flex-col rounded-3xl border border-white/10 bg-white/5 p-8 sm:p-10 transition-all hover:border-white/20"
+          >
             <div className="mb-6">
               <h3 className="font-serif text-2xl font-medium text-white mb-2">
                 Hobbyist
@@ -73,10 +114,13 @@ export const Pricing = () => {
             >
               Get Started
             </Button>
-          </div>
+          </motion.div>
 
           {/* Pro Plan */}
-          <div className="group relative flex flex-col rounded-3xl border border-orange-500/30 bg-orange-500/5 p-8 sm:p-10 transition-all hover:border-orange-500/50 shadow-[0_0_50px_rgba(255,77,21,0.05)]">
+          <motion.div
+            variants={itemVariants}
+            className="group relative flex flex-col rounded-3xl border border-orange-500/30 bg-orange-500/5 p-8 sm:p-10 transition-all hover:border-orange-500/50 shadow-[0_0_50px_rgba(255,77,21,0.05)]"
+          >
             <div className="absolute -top-4 right-6 sm:right-10 rounded-full bg-orange-500 px-3 py-1 text-[9px] sm:text-[10px] font-bold text-white uppercase tracking-widest">
               Most Popular
             </div>
@@ -125,8 +169,8 @@ export const Pricing = () => {
               Join the Team
               <MoveRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

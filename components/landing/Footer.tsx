@@ -2,20 +2,58 @@
 import React from "react";
 import Link from "next/link";
 import { Github, Twitter, MoveRight } from "lucide-react";
+import { motion, Variants } from "framer-motion";
 
 export const Mine = () => {
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
     <footer className="relative overflow-hidden bg-[#0a0a0a] pt-24 pb-12 px-6 lg:px-12 border-t border-white/5">
       <div className="container relative z-10 mx-auto">
         {/* Top Decorative Line */}
-        <div className="relative mb-16 h-px w-full bg-white/10">
+        <motion.div
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: "easeInOut" }}
+          className="relative mb-16 h-px w-full bg-white/10 origin-left"
+        >
           <div className="absolute -left-1 -top-[3px] h-2 w-2 rounded-sm bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
           <div className="absolute -right-1 -top-[3px] h-2 w-2 rounded-sm bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 gap-y-12 gap-x-6 sm:grid-cols-2 lg:grid-cols-3">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={containerVariants}
+          className="grid grid-cols-1 gap-y-12 gap-x-6 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {/* Features Column */}
-          <div className="relative pr-8 lg:border-r lg:border-white/5">
+          <motion.div
+            variants={itemVariants}
+            className="relative pr-8 lg:border-r lg:border-white/5"
+          >
             <div className="absolute -right-[4.5px] top-0 h-2 w-2 rounded-sm bg-orange-500 hidden lg:block" />
             <div className="absolute -right-[4.5px] bottom-0 h-2 w-2 rounded-sm bg-orange-500 hidden lg:block" />
             <h4 className="font-serif text-lg font-medium text-white mb-8">
@@ -55,10 +93,13 @@ export const Mine = () => {
                 </Link>
               </li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* Social Column */}
-          <div className="relative lg:px-8 lg:border-r lg:border-white/5">
+          <motion.div
+            variants={itemVariants}
+            className="relative lg:px-8 lg:border-r lg:border-white/5"
+          >
             <div className="absolute -right-[4.5px] top-0 h-2 w-2 rounded-sm bg-orange-500 hidden lg:block" />
             <div className="absolute -right-[4.5px] bottom-0 h-2 w-2 rounded-sm bg-orange-500 hidden lg:block" />
             <h4 className="font-serif text-lg font-medium text-white mb-8">
@@ -86,10 +127,10 @@ export const Mine = () => {
                 </a>
               </li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* Contact Column */}
-          <div className="relative lg:pl-8">
+          <motion.div variants={itemVariants} className="relative lg:pl-8">
             <h4 className="font-serif text-lg font-medium text-white mb-8">
               Join Us
             </h4>
@@ -105,17 +146,29 @@ export const Mine = () => {
                 <MoveRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Bottom Decorative Line */}
-        <div className="relative mt-24 mb-12 h-px w-full bg-white/10">
+        <motion.div
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: "easeInOut", delay: 0.2 }}
+          className="relative mt-24 mb-12 h-px w-full bg-white/10 origin-right"
+        >
           <div className="absolute -left-1 -top-[3px] h-2 w-2 rounded-sm bg-orange-500" />
           <div className="absolute -right-1 -top-[3px] h-2 w-2 rounded-sm bg-orange-500" />
-        </div>
+        </motion.div>
 
         {/* Footer Bottom Bar */}
-        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="flex flex-col items-center justify-between gap-6 md:flex-row"
+        >
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/20">
             © 2026 MINE. All rights reserved.
           </p>
@@ -133,13 +186,19 @@ export const Mine = () => {
               Terms of Service
             </Link>
           </div>
-        </div>
+        </motion.div>
 
         {/* Massive Background Text */}
         <div className="pointer-events-none absolute -bottom-16 left-0 w-full select-none text-center">
-          <h2 className="font-bricolage text-[15vw] font-black leading-none text-white/2 uppercase tracking-tighter">
+          <motion.h2
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="font-bricolage text-[15vw] font-black leading-none text-white/2 uppercase tracking-tighter"
+          >
             ReviewerAi
-          </h2>
+          </motion.h2>
         </div>
       </div>
     </footer>
