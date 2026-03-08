@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { signIn } from "@/lib/auth-client";
 import { useState } from "react";
 import { GithubIcon, Loader2 } from "lucide-react";
@@ -14,7 +14,7 @@ export default function LoginUI() {
     try {
       await signIn.social({
         provider: "github",
-        callbackURL: process.env.NEXT_PUBLIC_APP_URL + "/dashboard"
+        callbackURL: process.env.NEXT_PUBLIC_APP_URL + "/dashboard",
       });
     } catch (error) {
       console.log("Login error:", error);
@@ -24,91 +24,99 @@ export default function LoginUI() {
   };
 
   return (
-    <div className="fixed inset-0 bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 z-50">
-      <div className="h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-5xl mx-auto grid lg:grid-cols-2 gap-8 items-center">
-          {/* Left section - Marketing */}
-          <div className="text-center lg:text-left space-y-6">
-            <div className="space-y-3">
-              <div className="inline-flex items-center gap-3 text-2xl font-bold text-white">
-                <Image 
-                  src="/logo.png" 
-                  alt="Reviewers Logo" 
-                  width={40}
-                  height={40}
-                  className="rounded-lg"
-                />
-                <span>Reviewers</span>
-              </div>
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <div className="w-full max-w-5xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+        {/* Left section - Marketing */}
+        <div className="hidden lg:flex flex-col space-y-8">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center rounded-md border-2 border-foreground bg-primary p-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+              <Image
+                src="/logo.png"
+                alt="Reviewers Logo"
+                width={40}
+                height={40}
+                className="rounded-sm"
+              />
             </div>
+            <span className="font-poppins text-3xl font-bold tracking-tight text-foreground">
+              Reviewers
+            </span>
+          </div>
 
-            <div className="space-y-4">
-              <h1 className="text-3xl lg:text-5xl font-bold text-white leading-tight">
-                Cut Code Review
-                <span className="block">Time & Bugs in less Time solve.</span>
-                <span className="block">Instantly.</span>
-              </h1>
+          <div className="space-y-6">
+            <h1 className="font-poppins text-5xl lg:text-6xl font-black text-foreground leading-tight tracking-tighter">
+              Cut Code Review
+              <span className="block text-primary italic">Time & Bugs.</span>
+              <span className="block italic">Instantly.</span>
+            </h1>
 
-              <p className="text-base text-slate-300 leading-relaxed max-w-md">
-                Supercharge your team to ship faster with  AI
-                code reviews.
+            <p className="font-sans text-xl text-foreground/70 leading-relaxed max-w-md font-medium">
+              Supercharge your team to ship faster with AI-powered code reviews
+              that don't sleep.
+            </p>
+          </div>
+
+          <div className="relative">
+            <div className="absolute -left-4 top-0 h-full w-1 bg-secondary rounded-full" />
+            <p className="pl-6 font-mono text-sm text-foreground/60 italic">
+              "The only reviewer that doesn't complain about whitespace."
+            </p>
+          </div>
+        </div>
+
+        {/* Right section - Login Form */}
+        <div className="flex justify-center">
+          <Card className="w-full max-w-md border-2 border-foreground bg-card shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rounded-2xl overflow-hidden">
+            <CardHeader className="space-y-2 text-center bg-primary/10 border-b-2 border-foreground py-8">
+              <CardTitle className="font-poppins text-3xl font-black text-foreground">
+                Welcome Back
+              </CardTitle>
+              <p className="font-sans text-sm font-bold text-foreground/60 uppercase tracking-widest">
+                Ready to Review?
               </p>
-            </div>
-          </div>
+            </CardHeader>
+            <CardContent className="p-8 space-y-8">
+              <Button
+                onClick={handleLogin}
+                disabled={isLoading}
+                className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-poppins font-bold text-lg border-2 border-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-px hover:translate-y-px hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none gap-3"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                    Logging in...
+                  </>
+                ) : (
+                  <>
+                    <GithubIcon className="w-6 h-6" />
+                    Continue with GitHub
+                  </>
+                )}
+              </Button>
 
-          {/* Right section - Login Form */}
-          <div className="flex justify-center">
-            <Card className="w-full max-w-sm bg-transparent border-0">
-              <CardHeader className="space-y-4 text-center pb-4">
-                <CardTitle className="text-2xl font-bold text-white">Welcome Back</CardTitle>
-                <CardDescription className="text-slate-300">
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <Button
-                  onClick={handleLogin}
-                  disabled={isLoading}
-                  className="w-full h-12 bg-slate-800 hover:bg-slate-700 text-white font-medium border border-slate-600 gap-2"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Logging in...
-                    </>
-                  ) : (
-                    <>
-                      <GithubIcon className="w-5 h-5" />
-                      Continue with GitHub
-                    </>
-                  )}
-                </Button>
-
-                <div className="space-y-4 text-center text-sm text-slate-300">
-                  <div>
-                    New to Reviwer?{" "}
-                    <a href="#" className="text-white hover:text-slate-200 font-medium">
-                      Continue with Reviwer
-                    </a>
-                  </div>
-                  <div>
-                    <a href="#" className="text-white hover:text-slate-200 font-medium">
-                      Self-issue Checking Feature.
-                    </a>
-                  </div>
-                </div>
-
-                <div className="pt-6 border-t border-slate-700 flex items-center justify-center gap-2 text-xs text-slate-400">
-                  <a href="#" className="hover:text-slate-300 transition-colors">
-                    Terms of Use
-                  </a>
-                  <span>and</span>
-                  <a href="#" className="hover:text-slate-300 transition-colors">
-                    Privacy Policy
+              <div className="space-y-4 text-center">
+                <div className="font-sans text-sm font-semibold text-foreground/60">
+                  New to Reviewers?{" "}
+                  <a
+                    href="#"
+                    className="text-primary hover:underline font-bold"
+                  >
+                    Create an account
                   </a>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+
+              <div className="pt-6 border-t-2 border-foreground/10 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-bold uppercase tracking-widest text-foreground/40">
+                <a href="#" className="hover:text-primary transition-colors">
+                  Terms
+                </a>
+                <span className="h-1 w-1 rounded-full bg-foreground/20" />
+                <a href="#" className="hover:text-primary transition-colors">
+                  Privacy
+                </a>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
