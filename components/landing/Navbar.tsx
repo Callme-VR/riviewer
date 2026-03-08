@@ -1,8 +1,11 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth-client";
+import { ChevronRight } from "lucide-react";
+import { ModeToggle } from "@/components/ModeToggle";
 
 export const Navbar = () => {
   const handleLogin = async () => {
@@ -17,39 +20,48 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b-2 border-foreground bg-background/80 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center rounded-md border-2 border-foreground bg-primary p-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+    <div className="fixed top-6 z-50 flex w-full justify-center px-4">
+      <nav className="flex h-14 items-center gap-4 sm:gap-8 rounded-full border border-white/10 bg-[#121212]/80 px-3 sm:px-6 py-2 backdrop-blur-xl shadow-2xl">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="flex items-center justify-center rounded-lg bg-white/5 p-1.5 border border-white/10">
             <Image
               src="/logo.png"
               alt="Reviewers Logo"
-              width={24}
-              height={24}
-              className="rounded-sm"
+              width={20}
+              height={20}
+              className="brightness-125"
             />
           </div>
-          <span className="font-poppins text-xl font-bold tracking-tight text-foreground">
+          <span className="font-bricolage text-base sm:text-lg font-bold tracking-tight text-white hidden sm:block cursor-pointer">
             Reviewers
           </span>
+        </Link>
+
+        <div className="hidden items-center gap-4 sm:gap-6 md:flex">
+          {["Features", "Pricing"].map((item) => (
+            <a
+              key={item}
+              href={`#${item.toLowerCase()}`}
+              className="text-sm font-medium text-white/60 transition-colors hover:text-orange-500"
+            >
+              {item}
+            </a>
+          ))}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <ModeToggle />
           <Button
-            variant="ghost"
-            className="font-poppins font-semibold text-foreground hover:bg-transparent hover:text-primary"
             onClick={handleLogin}
+            className="group relative h-9 rounded-full bg-[#ff4d15] px-4 sm:px-5 font-poppins text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#ff4d15]/90 hover:scale-[1.02] active:scale-95 shadow-[0_0_20px_rgba(255,77,21,0.3)]"
           >
-            Login
-          </Button>
-          <Button
-            className="rounded-md border-2 border-foreground bg-primary font-poppins font-bold text-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-px hover:translate-y-px hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none"
-            onClick={handleLogin}
-          >
-            Get Started
+            <span className="relative z-10 flex items-center gap-1.5">
+              Login
+              <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </span>
           </Button>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 };

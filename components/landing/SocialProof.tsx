@@ -24,40 +24,42 @@ const testimonials = [
 
 export const SocialProof = () => {
   return (
-    <section className="container mx-auto px-4 py-20">
-      <div className="mb-16 text-center">
-        <h2 className="font-poppins text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Developers love us{" "}
-          <span className="text-foreground/40 italic">(mostly).</span>
-        </h2>
-      </div>
+    <section className="bg-[#0a0a0a] py-20 sm:py-32 px-4 sm:px-6 lg:px-12">
+      <div className="container mx-auto">
+        <div className="mb-16 sm:mb-20 text-center">
+          <h2 className="font-serif text-3xl font-medium tracking-tight text-white sm:text-6xl">
+            Developers love us{" "}
+            <span className="italic font-normal text-white/40">(mostly).</span>
+          </h2>
+        </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {testimonials.map((t, i) => (
-          <div
-            key={i}
-            className="rounded-xl border-2 border-foreground bg-white p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-          >
-            <div className="flex items-center gap-4">
-              <img
-                src={t.avatar}
-                alt={t.name}
-                className="h-12 w-12 rounded-full border-2 border-foreground"
-              />
-              <div>
-                <div className="font-poppins font-bold text-foreground">
-                  {t.name}
-                </div>
-                <div className="font-sans text-xs font-semibold text-foreground/50">
-                  {t.handle}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {testimonials.map((t, i) => (
+            <div
+              key={i}
+              className="group relative rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8 transition-all hover:bg-white/10"
+            >
+              <div className="flex items-center gap-4">
+                <img
+                  src={t.avatar}
+                  alt={t.name}
+                  className="h-10 w-10 sm:h-12 sm:w-12 rounded-full border border-white/20"
+                />
+                <div>
+                  <div className="font-serif text-base sm:text-lg font-medium text-white">
+                    {t.name}
+                  </div>
+                  <div className="font-sans text-[10px] sm:text-xs font-semibold text-white/40 uppercase tracking-widest">
+                    {t.handle}
+                  </div>
                 </div>
               </div>
+              <p className="mt-4 sm:mt-6 font-sans text-sm sm:text-base text-white/60 leading-relaxed italic">
+                "{t.text}"
+              </p>
             </div>
-            <p className="mt-4 font-sans text-foreground/80 leading-relaxed italic">
-              "{t.text}"
-            </p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
