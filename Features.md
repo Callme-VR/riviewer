@@ -8,6 +8,7 @@ This document outlines planned and suggested features to improve the performance
 *   **Hybrid Search**: Combine vector search (semantic) with keyword-based search (BM25) to better find specific function names or unique identifiers that might be missed by embeddings alone.
 *   **Embedding Caching**: Implement a Redis-based cache for common code snippets or previously generated embeddings to speed up the RAG retrieval process.
 
+
 ## 2. Interactive & Collaborative Features
 *   **Two-Way Conversation**: Enable users to reply to the AI's comments directly on GitHub. An Inngest function can listen for `issue_comment` webhooks, process the reply with the existing context, and post a follow-up response.
 *   **"Fix It" Suggestions (One-Click PRs)**: Enhance the AI output to provide actual code diffs. Add a feature in the dashboard to "Apply Fix," which automatically creates a new branch and PR with the suggested changes.

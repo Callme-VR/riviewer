@@ -1,7 +1,14 @@
 // Client-side auth wrapper with Turbopack compatibility
 "use client";
 
-import { useEffect, useState, useContext, createContext, ReactNode, useCallback } from "react";
+import {
+  useEffect,
+  useState,
+  useContext,
+  createContext,
+  ReactNode,
+  useCallback,
+} from "react";
 import { useRouter } from "next/navigation";
 
 interface User {
@@ -34,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchSession = useCallback(async () => {
     try {
-      const response = await fetch('/api/auth/session');
+      const response = await fetch("/api/auth/session");
       if (response.ok) {
         const data = await response.json();
         setSession(data?.session || null);
@@ -42,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(null);
       }
     } catch (error) {
-      console.error('Failed to fetch session:', error);
+      console.error("Failed to fetch session:", error);
       setSession(null);
     } finally {
       setIsLoading(false);
@@ -57,15 +64,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true);
       const response = await fetch(`/api/auth/signin/${provider}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
       });
-      
+
       if (response.redirected) {
         window.location.href = response.url;
       }
     } catch (error) {
-      console.error('Sign in error:', error);
+      console.error("Sign in error:", error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -75,11 +82,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => {
     try {
       setIsLoading(true);
-      await fetch('/api/auth/signout', { method: 'POST' });
+      await fetch("/api/auth/signout", { method: "POST" });
       setSession(null);
-      router.push('/login');
+      router.push("/");
     } catch (error) {
-      console.error('Sign out error:', error);
+      console.error("Sign out error:", error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -89,22 +96,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUp = async (userData: Record<string, unknown>) => {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData)
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setSession(data.session);
-        router.push('/dashboard');
+        router.push("/dashboard");
       } else {
         const error = await response.json();
-        throw new Error(error.message || 'Sign up failed');
+        throw new Error(error.message || "Sign up failed");
       }
     } catch (error) {
-      console.error('Sign up error:', error);
+      console.error("Sign up error:", error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -120,11 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refreshSession: fetchSession,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

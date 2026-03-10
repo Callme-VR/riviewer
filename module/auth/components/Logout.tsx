@@ -4,17 +4,17 @@ import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
-export default function Logout({ 
-  children, 
-  className, 
-  redirectUrl = "/login" 
-}: { 
-  children: React.ReactNode; 
+export default function Logout({
+  children,
+  className,
+  redirectUrl = "/",
+}: {
+  children: React.ReactNode;
   className?: string;
   redirectUrl?: string;
 }) {
   const router = useRouter();
-  
+
   const handleLogout = useCallback(async () => {
     try {
       // Sign out and wait for the promise to resolve
@@ -29,10 +29,7 @@ export default function Logout({
   }, [redirectUrl, router]);
 
   return (
-    <span 
-      className={className} 
-      onClick={handleLogout}
-    >
+    <span className={className} onClick={handleLogout}>
       {children}
     </span>
   );
