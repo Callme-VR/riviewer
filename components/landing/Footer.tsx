@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { Github, Twitter, MoveRight } from "lucide-react";
+import { ReviewersLogo } from "@/components/ui/logo";
+import { Github, Twitter, ArrowUpRight } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 
 export const Mine = () => {
@@ -16,104 +17,127 @@ export const Mine = () => {
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 15 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
-        ease: "easeOut",
+        duration: 0.5,
+        ease: [0.21, 0.47, 0.32, 0.98],
       },
     },
   };
 
   return (
-    <footer className="relative overflow-hidden bg-[#0a0a0a] pt-24 pb-12 px-6 lg:px-12 border-t border-white/5">
-      <div className="container relative z-10 mx-auto">
-        {/* Top Decorative Line */}
+    <footer className="relative bg-background pt-16 pb-12 px-6 md:px-12 border-t border-border-strong/60">
+
+
+      <div className="container relative z-10 mx-auto max-w-6xl space-y-12">
+        {/* Animated Hairline Top Divider */}
         <motion.div
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1, ease: "easeInOut" }}
-          className="relative mb-16 h-px w-full bg-white/10 origin-left"
-        >
-          <div className="absolute -left-1 -top-[3px] h-2 w-2 rounded-sm bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
-          <div className="absolute -right-1 -top-[3px] h-2 w-2 rounded-sm bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
-        </motion.div>
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="h-px w-full bg-border-strong origin-left"
+        />
 
+        {/* Main Footer 5-Column Grid with Staggered Entrance */}
         <motion.div
+          variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
-          variants={containerVariants}
-          className="grid grid-cols-1 gap-y-12 gap-x-6 sm:grid-cols-2 lg:grid-cols-3"
+          viewport={{ once: true, margin: "-40px" }}
+          className="grid grid-cols-2 gap-8 md:grid-cols-5"
         >
-          {/* Features Column */}
-          <motion.div
-            variants={itemVariants}
-            className="relative pr-8 lg:border-r lg:border-white/5"
-          >
-            <div className="absolute -right-[4.5px] top-0 h-2 w-2 rounded-sm bg-orange-500 hidden lg:block" />
-            <div className="absolute -right-[4.5px] bottom-0 h-2 w-2 rounded-sm bg-orange-500 hidden lg:block" />
-            <h4 className="font-serif text-lg font-medium text-white mb-8">
-              Features
+          {/* Column 1: Brand & Status */}
+          <motion.div variants={itemVariants} className="col-span-2 space-y-4 pr-4">
+            <Link href="/" className="flex items-center gap-2.5">
+              <ReviewersLogo />
+            </Link>
+
+            <p className="font-sans text-xs text-muted-foreground leading-relaxed max-w-xs">
+              Autonomous AI Code Reviewer. Catch security flaws, enforce architectural rules, and accelerate pull request velocity.
+            </p>
+
+            <div className="inline-flex items-center gap-2 rounded-full border border-border-strong bg-card px-2.5 py-1 text-[11px] font-mono text-foreground shadow-xs">
+              <span className="h-2 w-2 rounded-full bg-[#9fc9a2]" />
+              <span>All Systems Operational</span>
+            </div>
+          </motion.div>
+
+          {/* Column 2: Product */}
+          <motion.div variants={itemVariants} className="space-y-3">
+            <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground">
+              Product
             </h4>
-            <ul className="space-y-4 text-sm font-medium text-white/40">
+            <ul className="space-y-2.5 font-sans text-xs text-muted-foreground">
               <li>
-                <Link
-                  href="#features"
-                  className="hover:text-white transition-colors"
-                >
-                  AI Analysis
-                </Link>
+                <a href="#features" className="hover:text-foreground transition-colors">
+                  AI PR Analysis
+                </a>
               </li>
               <li>
-                <Link
-                  href="#features"
-                  className="hover:text-white transition-colors"
-                >
-                  Security Scan
-                </Link>
+                <a href="#features" className="hover:text-foreground transition-colors">
+                  Security Guard
+                </a>
               </li>
               <li>
-                <Link
-                  href="#features"
-                  className="hover:text-white transition-colors"
-                >
-                  Style Guard
-                </Link>
+                <a href="#timeline" className="hover:text-foreground transition-colors">
+                  5-Stage Timeline
+                </a>
               </li>
               <li>
-                <Link
-                  href="#features"
-                  className="hover:text-white transition-colors"
-                >
-                  PR Automation
-                </Link>
+                <a href="#pricing" className="hover:text-foreground transition-colors">
+                  Pricing Plans
+                </a>
               </li>
             </ul>
           </motion.div>
 
-          {/* Social Column */}
-          <motion.div
-            variants={itemVariants}
-            className="relative lg:px-8 lg:border-r lg:border-white/5"
-          >
-            <div className="absolute -right-[4.5px] top-0 h-2 w-2 rounded-sm bg-orange-500 hidden lg:block" />
-            <div className="absolute -right-[4.5px] bottom-0 h-2 w-2 rounded-sm bg-orange-500 hidden lg:block" />
-            <h4 className="font-serif text-lg font-medium text-white mb-8">
+          {/* Column 3: Resources */}
+          <motion.div variants={itemVariants} className="space-y-3">
+            <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground">
+              Resources
+            </h4>
+            <ul className="space-y-2.5 font-sans text-xs text-muted-foreground">
+              <li>
+                <a href="#features" className="hover:text-foreground transition-colors">
+                  Documentation
+                </a>
+              </li>
+              <li>
+                <a href="#features" className="hover:text-foreground transition-colors">
+                  API Reference
+                </a>
+              </li>
+              <li>
+                <a href="#features" className="hover:text-foreground transition-colors">
+                  GitHub Integration
+                </a>
+              </li>
+              <li>
+                <a href="#features" className="hover:text-foreground transition-colors">
+                  Changelog
+                </a>
+              </li>
+            </ul>
+          </motion.div>
+
+          {/* Column 4: Social */}
+          <motion.div variants={itemVariants} className="space-y-3">
+            <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground">
               Social
             </h4>
-            <ul className="space-y-4 text-sm font-medium text-white/40">
+            <ul className="space-y-2.5 font-sans text-xs text-muted-foreground">
               <li>
                 <a
                   href="https://github.com/Callme-VR"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
                 >
-                  <Github className="h-4 w-4" /> GitHub
+                  <Github className="h-3.5 w-3.5" /> GitHub <ArrowUpRight className="h-3 w-3 text-muted-foreground" />
                 </a>
               </li>
               <li>
@@ -121,86 +145,41 @@ export const Mine = () => {
                   href="https://x.com/CodeAi_Vishal"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
                 >
-                  <Twitter className="h-4 w-4" /> X (Twitter)
+                  <Twitter className="h-3.5 w-3.5" /> X (Twitter) <ArrowUpRight className="h-3 w-3 text-muted-foreground" />
                 </a>
               </li>
             </ul>
           </motion.div>
-
-          {/* Contact Column */}
-          <motion.div variants={itemVariants} className="relative lg:pl-8">
-            <h4 className="font-serif text-lg font-medium text-white mb-8">
-              Join Us
-            </h4>
-            <div className="flex flex-col gap-4">
-              <p className="text-sm font-medium text-white/40 leading-relaxed">
-                Ready to automate your reviews?
-              </p>
-              <Link
-                href="/login"
-                className="flex items-center gap-2 text-sm font-bold text-orange-500 group"
-              >
-                Start Now{" "}
-                <MoveRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </div>
-          </motion.div>
         </motion.div>
 
-        {/* Bottom Decorative Line */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, ease: "easeInOut", delay: 0.2 }}
-          className="relative mt-24 mb-12 h-px w-full bg-white/10 origin-right"
-        >
-          <div className="absolute -left-1 -top-[3px] h-2 w-2 rounded-sm bg-orange-500" />
-          <div className="absolute -right-1 -top-[3px] h-2 w-2 rounded-sm bg-orange-500" />
-        </motion.div>
-
-        {/* Footer Bottom Bar */}
+        {/* Bottom Bar */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex flex-col items-center justify-between gap-6 md:flex-row"
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="pt-8 border-t border-border-strong/60 flex flex-col md:flex-row items-center justify-between gap-4 font-sans text-xs text-muted-foreground"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/20">
-            © 2026 MINE. All rights reserved.
-          </p>
-          <div className="flex gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
-            <Link
-              href="/privacy"
-              className="hover:text-orange-500 transition-colors"
-            >
+          <div>
+            © {new Date().getFullYear()} Reviewers AI Inc. All rights reserved.
+          </div>
+          <div className="flex gap-6">
+            <Link href="/" className="hover:text-foreground transition-colors">
               Privacy Policy
             </Link>
-            <Link
-              href="/terms"
-              className="hover:text-orange-500 transition-colors"
-            >
+            <Link href="/" className="hover:text-foreground transition-colors">
               Terms of Service
+            </Link>
+            <Link href="/" className="hover:text-foreground transition-colors">
+              Security
             </Link>
           </div>
         </motion.div>
-
-        {/* Massive Background Text */}
-        <div className="pointer-events-none absolute -bottom-16 left-0 w-full select-none text-center">
-          <motion.h2
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-            className="font-bricolage text-[15vw] font-black leading-none text-white/2 uppercase tracking-tighter"
-          >
-            ReviewerAi
-          </motion.h2>
-        </div>
       </div>
     </footer>
   );
 };
+
+

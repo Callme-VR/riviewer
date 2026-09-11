@@ -1,10 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ReviewersLogo } from "@/components/ui/logo";
 import { signIn } from "@/lib/auth-client";
 import { useState } from "react";
-import { GithubIcon, Loader2 } from "lucide-react";
-import Image from "next/image";
+import { Github, Loader2 } from "lucide-react";
 
 export default function LoginUI() {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +14,7 @@ export default function LoginUI() {
     try {
       await signIn.social({
         provider: "github",
-        callbackURL: process.env.NEXT_PUBLIC_APP_URL + "/dashboard",
+        callbackURL: (process.env.NEXT_PUBLIC_APP_URL || "") + "/dashboard",
       });
     } catch (error) {
       console.log("Login error:", error);
@@ -29,18 +29,7 @@ export default function LoginUI() {
         {/* Left section - Marketing */}
         <div className="hidden lg:flex flex-col space-y-8">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center rounded-md border-2 border-foreground bg-primary p-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
-              <Image
-                src="/logo.png"
-                alt="Reviewers Logo"
-                width={40}
-                height={40}
-                className="rounded-sm"
-              />
-            </div>
-            <span className="font-poppins text-3xl font-bold tracking-tight text-foreground">
-              Reviewers
-            </span>
+            <ReviewersLogo size={28} />
           </div>
 
           <div className="space-y-6">
@@ -88,7 +77,7 @@ export default function LoginUI() {
                   </>
                 ) : (
                   <>
-                    <GithubIcon className="w-6 h-6" />
+                    <Github className="w-6 h-6" />
                     Continue with GitHub
                   </>
                 )}
