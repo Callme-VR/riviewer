@@ -185,7 +185,7 @@ export const Pricing = () => {
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-4 w-4 text-[#f54e00]" />
-                  <span>Priority AI inference & latency</span>
+                  <span>Priority AI inference & processing queue</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="h-4 w-4 text-[#f54e00]" />

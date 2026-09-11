@@ -38,11 +38,13 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "Reviewers - AI Powered Code Review on Autopilot",
+  title: "Reviewers - Autonomous AI Code Reviews",
   description:
     "Stop merging bugs. Let AI review your PRs instantly, enforce style guides, and catch security issues before your team does.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
   },
 };
 

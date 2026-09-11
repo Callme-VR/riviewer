@@ -79,7 +79,7 @@ export const Features = () => {
               <Timer className="h-5 w-5" />
             </div>
             <h3 className="font-sans text-lg font-medium text-foreground">
-              4-Second PR Feedback
+              Instant Automated Feedback
             </h3>
             <p className="font-sans text-sm text-muted-foreground leading-relaxed">
               Human reviews take hours. Reviewers scans diffs, runs deep AST checks, and leaves structured feedback before your build finishes.
@@ -153,9 +153,8 @@ export const Features = () => {
                   color: item.text,
                   opacity: selectedPill === idx ? 1 : 0.65,
                 }}
-                className={`rounded-full px-3.5 py-1 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
-                  selectedPill === idx ? "ring-2 ring-foreground scale-105" : "hover:opacity-90"
-                }`}
+                className={`rounded-full px-3.5 py-1 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${selectedPill === idx ? "ring-2 ring-foreground scale-105" : "hover:opacity-90"
+                  }`}
               >
                 {item.stage}
               </button>

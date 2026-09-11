@@ -28,10 +28,10 @@ const testimonials = [
 ];
 
 const metrics = [
-  { value: "50,000+", label: "PRs Reviewed" },
-  { value: "98%", label: "Faster Cycle Time" },
-  { value: "< 4s", label: "Average AI Latency" },
-  { value: "0", label: "False Positives Swallowed" },
+  { value: "500+", label: "PRs Reviewed" },
+  { value: "24/7", label: "Autonomous Pipeline" },
+  { value: "100%", label: "AST Security Scanning" },
+  { value: "0", label: "Manual Config Needed" },
 ];
 
 export const SocialProof = () => {

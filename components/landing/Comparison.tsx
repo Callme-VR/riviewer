@@ -8,7 +8,7 @@ const comparisonRows = [
   {
     feature: "PR Review Latency",
     manual: "4 to 12 hours waiting on senior engineers",
-    ai: "4 seconds automated turnaround",
+    ai: "Automated instant turnaround",
     icon: Clock,
   },
   {
